@@ -62,8 +62,11 @@ with tempfile.TemporaryDirectory() as tmp:
     def refuse(text: str) -> str:
         raise tm.TranslateError("HTTP 429")
 
+    # known chips are mapped locally, no provider call
+    assert json.loads(tm.translate_tags('["音频"]', refuse)) == ["Audio"]
+
     try:
-        tm.translate_tags('["音频"]', refuse)
+        tm.translate_tags('["某个未收录标签"]', refuse)
     except tm.TranslateError:
         pass
     else:
