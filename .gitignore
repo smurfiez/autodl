@@ -1,0 +1,11 @@
+# live instance state, rewritten by tools/servers.py
+servers.json
+
+# local agent session state
+.opencode/
+
+# python
+__pycache__/
+*.pyc
+
+.DS_Store

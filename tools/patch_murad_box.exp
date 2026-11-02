@@ -1,0 +1,26 @@
+#!/usr/bin/expect -f
+# Patch + start a MURAD (app 313) box in one shot.
+#   SSH_PORT=30934 SSH_HOST=connect.weste.seetacloud.com PW=secret \
+#   PANEL=https://uu1241700-<uuid>.weste.seetacloud.com:8443 ./patch_murad_box.exp
+# PANEL is what makes ComfyUI actually start: the patch only edits a file.
+set timeout 600
+set host  [expr {[info exists env(SSH_HOST)] ? $env(SSH_HOST) : "connect.weste.seetacloud.com"}]
+set port  [expr {[info exists env(SSH_PORT)] ? $env(SSH_PORT) : "22"}]
+set pw    [expr {[info exists env(PW)] ? $env(PW) : ""}]
+set panel [expr {[info exists env(PANEL)] ? $env(PANEL) : ""}]
+set local [file dirname [info script]]/patch_murad_box.sh
+
+proc run {args} {
+  global pw
+  foreach {cmd args} {} {}
+  eval spawn $args
+  expect {
+    -re "(?i)password:" { send "$pw\r"; exp_continue }
+    eof {}
+    timeout { puts "TIMEOUT"; exit 1 }
+  }
+  catch { wait }
+}
+
+run scp -P $port -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null $local root@$host:/tmp/patch_murad_box.sh
+run ssh -p $port -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$host "bash /tmp/patch_murad_box.sh $panel"
