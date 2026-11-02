@@ -309,6 +309,15 @@ def normalize(item: dict) -> dict:
     }
 
 
+# Not every image ships python3 on PATH (only some do); find one, else say why.
+COLLECTOR_RUN = (
+    'for p in python3 /usr/bin/python3 /usr/local/bin/python3 python '
+    '/opt/conda/bin/python /root/miniconda3/bin/python /usr/bin/python; do '
+    'if command -v "$p" >/dev/null 2>&1; then exec "$p" -; fi; done; '
+    'echo "no python interpreter on PATH" >&2; exit 127'
+)
+
+
 def ssh_target(item: dict) -> tuple[str, int, str]:
     parts = (item.get("ssh_command") or "").split()
     host = parts[-1].split("@")[-1] if parts else ""
@@ -341,12 +350,14 @@ def host_stats(host: str, port: int, password: str) -> dict:
             look_for_keys=False,
         )
         client.save_host_keys(str(KNOWN_HOSTS))
-        stdin, stdout, stderr = client.exec_command("python3 -", timeout=25)
+        stdin, stdout, stderr = client.exec_command(COLLECTOR_RUN, timeout=25)
         stdin.write(COLLECTOR)
         stdin.channel.shutdown_write()
         raw = stdout.read().decode("utf-8", "replace")
         if not raw.strip():
-            raise RuntimeError("collector printed nothing")
+            # no python3 on some images (LTX/musetalk builds); keep the reason, it is remote stderr
+            reason = stderr.read().decode("utf-8", "replace").strip().splitlines()
+            raise RuntimeError((reason[-1] if reason else "collector printed nothing")[:160])
         return json.loads(raw)
     finally:
         client.close()
@@ -437,7 +448,8 @@ async def refresh_health() -> None:
             except paramiko.AuthenticationException:
                 stats_error = "ssh auth rejected"
             except Exception as exc:
-                stats_error = f"ssh {type(exc).__name__}"
+                detail = str(exc).strip().splitlines()
+                stats_error = f"ssh {type(exc).__name__}: {detail[-1][:120]}" if detail else f"ssh {type(exc).__name__}"
             comfy = None
             if comfy_task is not None:
                 comfy = await comfy_task

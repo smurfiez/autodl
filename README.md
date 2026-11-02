@@ -146,6 +146,10 @@ so framework/cuda filters describe the current image, not older ones.
 - App 313 image: `app-image-8a23e8ee9e`, `image_id 313`, version `2.0`, `current_version_id 962`; disk default `32212254720` bytes (30 GB base, no expansion).
 - `power_off` does not stop billing. `release` requires `shutdown` first (`请在实例关机状态下执行释放操作` otherwise).
 - A fresh box needs ~60-90 s before `:8443` answers; `/api/comfy/status` reports `starting` until then.
+- Not every marketplace image has `python3` on PATH (the LTX 2.5 box does not);
+  the health collector tries `python3`, `/opt/conda/bin/python`, `python` and a
+  few absolute paths before giving up, and reports "no python interpreter on
+  PATH" as the box error.
 - Patching `server.py` alone changes nothing until ComfyUI restarts — that is why `patch_murad_box.sh` starts it and waits for `/system_stats`.
 
 Deeper notes (sentinel diagnosis, model layout, download pitfalls) live in
