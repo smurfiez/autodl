@@ -244,6 +244,9 @@ def translate_tags(raw: str | None, translator=None) -> str:
     source = TAG_SEP.join(tags)
     if is_ascii(source):
         return json.dumps(tags, ensure_ascii=False)
+    if all(is_ascii(tag) or tag in TAG_GLOSSARY for tag in tags):
+        # every chip is already known: no provider round-trip needed
+        return json.dumps([TAG_GLOSSARY.get(tag, tag) for tag in tags], ensure_ascii=False)
     else:
         translated = translate_text(source, translator)
         english = [part.strip() for part in translated.split("|") if part.strip()]
