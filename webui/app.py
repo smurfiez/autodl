@@ -14,6 +14,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import sqlite3
 import os
 import time
 from contextlib import asynccontextmanager
@@ -34,6 +35,7 @@ from collector import COLLECTOR
 BASE = "https://www.autodl.art"
 TOKEN_PATH = Path.home() / ".config" / "adl" / "token"
 KNOWN_HOSTS = Path.home() / ".config" / "adl" / "known_hosts"
+MARKET_DB = Path(__file__).resolve().parent.parent / "market.db"
 INSTANCES = "/api/v1/adl_server/instance/pro?page_index=1&page_size=200"
 POWER_ON = "/api/v1/adl_server/instance/pro/power_on"
 POWER_OFF = "/api/v1/adl_server/instance/pro/power_off"
@@ -74,6 +76,39 @@ DEPLOY_TTL = 6 * 3600
 jobs: dict[str, dict] = {}
 job_tasks: dict[str, asyncio.Task] = {}
 health: dict[str, dict] = {}
+
+
+def market(query: str, params: tuple = ()) -> list[dict]:
+    if not MARKET_DB.exists():
+        raise HTTPException(503, f"{MARKET_DB.name} not found next to the repo root")
+    with sqlite3.connect(f"file:{MARKET_DB}?mode=ro", uri=True) as connection:
+        connection.row_factory = sqlite3.Row
+        return [dict(row) for row in connection.execute(query, params)]
+
+
+DEPLOYABLE = "image_status = 'success' and review_status = 'pass'"
+
+
+def resolve_image(app_id: int, version_id: int) -> dict:
+    """The create/payg fields for one market image version, straight from market.db."""
+    apps = market("select id, uuid, name from applications where id = ?", (app_id,))
+    versions = market(
+        f"select id, image_version, private_image_uuid, image_size, image_status, review_status "
+        f"from versions where id = ? and application_id = ?",
+        (version_id, app_id),
+    )
+    if not apps or not versions:
+        raise HTTPException(400, f"unknown application {app_id} / version {version_id}")
+    version = versions[0]
+    if version["image_status"] != "success" or version["review_status"] != "pass":
+        raise HTTPException(409, f"image version {version_id} is not deployable ({version['image_status']}/{version['review_status']})")
+    return {
+        "app_uuid": version["private_image_uuid"] or apps[0]["uuid"],
+        "image_id": apps[0]["id"],
+        "image_name": apps[0]["name"],
+        "version": version["image_version"],
+        "version_id": version["id"],
+    }
 
 
 def token() -> str:
@@ -423,11 +458,8 @@ class CreateRequest(BaseModel):
     gpu: str = Field(min_length=1, max_length=64)
     data_centers: list[str] = Field(default_factory=lambda: list(DATA_CENTERS), min_length=1, max_length=4)
     name: str = Field("", max_length=64)
-    app_uuid: str = Field(pattern=r"^[A-Za-z0-9_-]{1,64}$")
-    image_id: int = Field(ge=1)
-    image_name: str = Field(min_length=1, max_length=128)
-    version: str = Field("latest", max_length=32)
-    version_id: int = Field(ge=0)
+    app_id: int = Field(ge=1)
+    version_id: int = Field(ge=1)
     disk_extra_gb: int = Field(0, ge=0, le=500)
     wait: bool = True  # queued deploy: poll inventory until the slot frees
 
@@ -465,6 +497,35 @@ async def idle_by_dc(data_centers: list[str]) -> dict[str, dict[str, int]]:
         return dc, {item.get("gpu_type"): item.get("gpu_idle_num", 0) for item in payload.get("data") or []}
 
     return dict(await asyncio.gather(*(one(dc) for dc in data_centers)))
+
+
+@app.get("/api/apps")
+async def apps(q: str = "", limit: int = 500) -> dict:
+    rows = market(
+        f"""select a.id, a.name, a.uuid, a.latest_version, a.star_num, a.use_num, a.tags,
+                   (select count(*) from versions v where v.application_id = a.id and {DEPLOYABLE}) as versions
+            from applications a
+            where ? = '' or a.name like ?
+            order by a.star_num desc, a.id
+            limit ?""",
+        (q, f"%{q}%", max(1, min(limit, 1000))),
+    )
+    return {"apps": rows, "db": MARKET_DB.name}
+
+
+@app.get("/api/apps/{app_id}")
+async def app_versions(app_id: int) -> dict:
+    apps = market("select id, uuid, name, latest_version, describe from applications where id = ?", (app_id,))
+    if not apps:
+        raise HTTPException(404, "unknown application")
+    versions = market(
+        f"""select id, image_version, framework, framework_v, cuda_v, image_size,
+                   private_image_uuid, image_status, review_status, start_command, created_at
+            from versions where application_id = ? and {DEPLOYABLE}
+            order by id desc""",
+        (app_id,),
+    )
+    return {"app": apps[0], "versions": versions}
 
 
 @app.get("/api/gpus")
@@ -539,7 +600,7 @@ async def health_api() -> dict:
     return {"now": int(time.time() * 1000), "boxes": boxes}
 
 
-def create_body(request: CreateRequest, spec_id: int, disk: int, data_center: str) -> dict:
+def create_body(request: CreateRequest, image: dict, spec_id: int, disk: int, data_center: str) -> dict:
     return {
         "instance_info": {
             "charge_type": "payg",
@@ -547,12 +608,12 @@ def create_body(request: CreateRequest, spec_id: int, disk: int, data_center: st
             "data_center_list": [data_center],
             "expand_system_disk": disk,
             "gpu_spec_info": {"id": spec_id},
-            "cg_application_uuid": request.app_uuid,
+            "cg_application_uuid": image["app_uuid"],
             "cg_application_info": {
-                "image_id": request.image_id,
-                "image_name": request.image_name,
-                "current_version": request.version,
-                "current_version_id": request.version_id,
+                "image_id": image["image_id"],
+                "image_name": image["image_name"],
+                "current_version": image["version"],
+                "current_version_id": image["version_id"],
             },
             **({"instance_name": request.name} if request.name else {}),
         },
@@ -567,14 +628,14 @@ def create_body(request: CreateRequest, spec_id: int, disk: int, data_center: st
     }
 
 
-async def try_create(request: CreateRequest, spec_id: int, disk: int, order: list[str]) -> tuple[str, str, list[str]]:
+async def try_create(request: CreateRequest, image: dict, spec_id: int, disk: int, order: list[str]) -> tuple[str, str, list[str]]:
     """Create in the first data center that accepts; returns (uuid, dc, earlier failures)."""
     failures: list[str] = []
     for data_center in order:
         try:
             payload = await call(
                 "/api/v1/adl_server/order/instance/pro/create/payg",
-                create_body(request, spec_id, disk, data_center),
+                create_body(request, image, spec_id, disk, data_center),
             )
         except HTTPException as exc:
             failures.append(f"{data_center}: {exc.detail}")
@@ -586,21 +647,21 @@ async def try_create(request: CreateRequest, spec_id: int, disk: int, order: lis
     raise HTTPException(502, "; ".join(failures) or "create failed in every data center")
 
 
-async def deploy_when_ready(job_id: str, request: CreateRequest, spec_id: int, disk: int) -> None:
+async def deploy_when_ready(job_id: str, request: CreateRequest, image: dict, spec_id: int, disk: int) -> None:
     deadline = time.monotonic() + DEPLOY_TTL
     while time.monotonic() < deadline:
         idle = await idle_by_dc(request.data_centers)
         order = sorted(request.data_centers, key=lambda dc: idle.get(dc, {}).get(request.gpu, 0), reverse=True)
         if any(idle.get(dc, {}).get(request.gpu, 0) > 0 for dc in order):
             try:
-                uuid, data_center, _ = await try_create(request, spec_id, disk, order)
+                uuid, data_center, _ = await try_create(request, image, spec_id, disk, order)
             except HTTPException as exc:
                 set_job(job_id, "retrying", f"stock seen but create failed: {exc.detail}"[:200], "deploy")
                 await asyncio.sleep(DEPLOY_POLL)
                 continue
             set_job(job_id, "created", f"{uuid} in {data_center}", "deploy", uuid=uuid)
             return
-        set_job(job_id, "waiting", f"no {request.gpu} idle in {' / '.join(request.data_centers)}", "deploy")
+        set_job(job_id, "waiting", f"no {request.gpu} idle in {' / '.join(request.data_centers)} for {image['image_name']}", "deploy")
         await asyncio.sleep(DEPLOY_POLL)
     set_job(job_id, "failed", f"gave up after {DEPLOY_TTL // 3600}h without stock", "deploy")
 
@@ -610,9 +671,8 @@ async def create(request: CreateRequest) -> dict:
     data_centers = [dc for dc in dict.fromkeys(request.data_centers) if dc in DATA_CENTERS]
     if not data_centers:
         raise HTTPException(400, f"data_centers must be a subset of {', '.join(DATA_CENTERS)}")
-    if request.version == "latest":
-        raise HTTPException(400, "version must be the concrete image version, not 'latest'")
     request.data_centers = data_centers
+    image = resolve_image(request.app_id, request.version_id)
 
     spec_id = SLOT_BY_NAME.get(request.gpu, {}).get("id")
     try:
@@ -634,19 +694,26 @@ async def create(request: CreateRequest) -> dict:
     idle = await idle_by_dc(data_centers)
     order = sorted(data_centers, key=lambda dc: idle.get(dc, {}).get(request.gpu, 0), reverse=True)
     try:
-        uuid, data_center, failures = await try_create(request, spec_id, disk, order)
+        uuid, data_center, failures = await try_create(request, image, spec_id, disk, order)
     except HTTPException as exc:
         if not request.wait:
             raise
         job_id = f"dep-{uuid4().hex[:8]}"
         set_job(job_id, "queued", f"queued: {exc.detail}"[:200], "deploy")
-        task = asyncio.create_task(deploy_when_ready(job_id, request, spec_id, disk))
+        task = asyncio.create_task(deploy_when_ready(job_id, request, image, spec_id, disk))
         job_tasks[job_id] = task
         task.add_done_callback(lambda _task, key=job_id: job_tasks.pop(key, None))
         tasks.add(task)
         task.add_done_callback(tasks.discard)
-        return {"queued": True, "job_id": job_id, "spec_id": spec_id, "status": "waiting"}
-    return {"uuid": uuid, "spec_id": spec_id, "data_center": data_center, "attempts": failures, "status": "creating"}
+        return {"queued": True, "job_id": job_id, "spec_id": spec_id, "image": image, "status": "waiting"}
+    return {
+        "uuid": uuid,
+        "spec_id": spec_id,
+        "data_center": data_center,
+        "image": image,
+        "attempts": failures,
+        "status": "creating",
+    }
 
 
 @app.delete("/api/jobs/{job_id}")

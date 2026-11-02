@@ -37,6 +37,8 @@ the browser.
 |---|---|
 | `GET /` | `webui/index.html`. |
 | `GET /api/config` | whether a token was found and the allowed data centers. |
+| `GET /api/apps?q=&limit=` | market catalog from `market.db`: id, name, latest version, stars, deployable version count. |
+| `GET /api/apps/{app_id}` | that app plus every version with `image_status=success` / `review_status=pass` (framework, CUDA, size, image uuid, start command). |
 | `GET /api/gpus?dc=westDC3&dc=beijingDC2` | GPU slots with live idle counts per data center (`idle_by_dc`, `idle` = sum); unknown names are appended. |
 | `GET /api/instances` | normalized pro instances (newest first) and in-flight deploy/release jobs. |
 | `POST /api/instances` | `create/payg`; tries each selected data center richest-first, resolves the payg spec id, disk = (30 + extra GB). With `wait: true` a failed create becomes a polling job. |
@@ -47,9 +49,12 @@ the browser.
 | `GET /api/health` | per-box host stats and ComfyUI state cached by the poller. |
 
 - Deploy form: GPU slot (idle count live per data center), one or both of
-  `westDC3` / `beijingDC2`, optional name, extra system disk (0-500 GB). Image
-  fields are prefilled and editable: `app-image-8a23e8ee9e` / image `313` /
-  `MURAD-ComfyUI` / `2.0` / `962`.
+  `westDC3` / `beijingDC2`, optional name, extra system disk (0-500 GB).
+- Application and version are chosen from `market.db` (250 apps): a filter box
+  narrows the app list, the version list only shows deployable versions, and
+  the info line shows the image uuid and start command that will be sent.
+  Without `market.db` the form cannot resolve an image and `/api/apps` answers
+  503; rebuild the DB with `python3 tools/market.py sync`.
 - Every slot is selectable. When the chosen card has no idle GPU anywhere, the
   form still queues it: a background job re-polls `gpu_type` every 15 s for up
   to 6 h and creates the instance in the first data center that frees a slot.
@@ -77,7 +82,7 @@ the browser.
 | `tools/release_autodl.py` | `power_off` → wait `shutdown` → `release` → refresh `servers.json`. Destructive; needs `--confirm`. |
 | `tools/patch_murad_box.sh` | Runs on the box: patches `server.py` so the panel's RAM sentinel stops unloading models between prompts, then makes sure ComfyUI is serving (panel restart, falling back to the image's own `start-comfyui.sh`). Prints `SERVING:` on success. |
 | `tools/patch_murad_box.exp` | Drives the above over SSH with `SSH_HOST` / `SSH_PORT` / `PW` / `PANEL` env vars. |
-| `webui/app.py` | FastAPI console: instance list, deploy form, power/release jobs, and the 10 s health poller (SSH + ComfyUI). Serves `index.html` and `/api/*`; the token stays server-side. |
+| `webui/app.py` | FastAPI console: instance list, deploy form backed by `market.db`, power/release/deploy jobs, and the 10 s health poller (SSH + ComfyUI). Serves `index.html` and `/api/*`; the token stays server-side. |
 | `webui/index.html` | Vanilla-JS single page: deploy form, instance table, health tiles. Polls instances/health every 5 s, GPU inventory every 60 s. |
 | `webui/collector.py` | Read-only stdlib script piped over SSH stdin: GPU (`nvidia-smi`), disks, load, memory, swap and top processes as one JSON object. |
 

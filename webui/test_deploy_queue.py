@@ -17,12 +17,18 @@ def job(gpu: str = "vGPU-32GB") -> app.CreateRequest:
     return app.CreateRequest(
         gpu=gpu,
         data_centers=["westDC3", "beijingDC2"],
-        app_uuid="app-image-test",
-        image_id=313,
-        image_name="MURAD-ComfyUI",
-        version="2.0",
+        app_id=313,
         version_id=962,
     )
+
+
+IMAGE = {
+    "app_uuid": "app-image-test",
+    "image_id": 313,
+    "image_name": "MURAD-ComfyUI",
+    "version": "2.0",
+    "version_id": 962,
+}
 
 
 async def case_stock_arrives_later() -> None:
@@ -39,7 +45,7 @@ async def case_stock_arrives_later() -> None:
 
     app.idle_by_dc, app.call = idle_by_dc, call
     app.jobs.clear()
-    await app.deploy_when_ready("dep-a", job(), 3, 0)
+    await app.deploy_when_ready("dep-a", job(), IMAGE, 3, 0)
     entry = app.jobs["dep-a"]
     assert entry["state"] == "created", entry
     assert entry["uuid"] == "pro-test123", entry
@@ -61,7 +67,7 @@ async def case_create_retries() -> None:
 
     app.idle_by_dc, app.call = idle_by_dc, call
     app.jobs.clear()
-    await app.deploy_when_ready("dep-b", job(), 3, 0)
+    await app.deploy_when_ready("dep-b", job(), IMAGE, 3, 0)
     entry = app.jobs["dep-b"]
     assert entry["state"] == "created", entry
     assert entry["uuid"] == "pro-test456", entry
@@ -78,7 +84,7 @@ async def case_gives_up() -> None:
     app.idle_by_dc, app.call = idle_by_dc, call
     app.jobs.clear()
     app.DEPLOY_TTL = 0.05
-    await app.deploy_when_ready("dep-c", job(), 3, 0)
+    await app.deploy_when_ready("dep-c", job(), IMAGE, 3, 0)
     entry = app.jobs["dep-c"]
     assert entry["state"] == "failed", entry
 

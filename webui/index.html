@@ -177,16 +177,10 @@
           <label><input type="checkbox" id="waitStock" checked> Queue until a slot frees</label>
         </div>
 
-        <details>
-          <summary>Image / application</summary>
-          <div id="image" class="img-grid">
-            <label>Application UUID <input id="appUuid" class="mono" value="app-image-8a23e8ee9e"></label>
-            <label>Image id <input id="imageId" class="mono" type="number" value="313"></label>
-            <label>Image name <input id="imageName" value="MURAD-ComfyUI"></label>
-            <label>Version <input id="version" class="mono" value="2.0"></label>
-            <label>Version id <input id="versionId" class="mono" type="number" value="962"></label>
-          </div>
-        </details>
+        <label>Application <select id="app"></select></label>
+        <label>Version <select id="version"></select></label>
+        <label>Filter apps <input id="appFilter" placeholder="type a name…" autocomplete="off"></label>
+        <div class="status-line" id="appInfo" style="grid-column:1/-1"></div>
 
         <div class="actions">
           <button class="primary" id="deployBtn" type="submit">Deploy</button>
@@ -223,7 +217,7 @@
 
 <script>
 const $ = (id) => document.getElementById(id);
-const state = { instances: [], jobs: [], pending: new Set(), config: null, health: null, pollTimer: null };
+const state = { instances: [], jobs: [], pending: new Set(), config: null, health: null, apps: [], pollTimer: null };
 const STEPS = new Set(["creating", "created", "sys_volume_creating", "starting"]);
 const BAD = new Set(["create_failed", "pull_image_failed", "shutdown_by_starting_error"]);
 
@@ -508,6 +502,68 @@ function showBanner(message) {
   banner.classList.add("show");
 }
 
+const appName = (app) => `${app.name} — #${app.id}`;
+
+function fillApps(filter = "") {
+  const select = $("app");
+  const previous = select.value;
+  const needle = filter.trim().toLowerCase();
+  select.textContent = "";
+  const rows = (state.apps || []).filter((app) => !needle || app.name.toLowerCase().includes(needle));
+  for (const app of rows) {
+    select.append(el("option", { value: String(app.id), textContent: appName(app) }));
+  }
+  const keep = rows.some((app) => String(app.id) === previous) ? previous : (rows[0] ? String(rows[0].id) : "");
+  select.value = keep;
+  loadVersions();
+}
+
+async function loadApps() {
+  try {
+    const data = await api("/api/apps");
+    state.apps = data.apps || [];
+    const murad = state.apps.find((app) => app.id === 313);
+    fillApps();
+    if (murad) { $("app").value = "313"; loadVersions(); }
+    $("appFilter").oninput = (event) => fillApps(event.target.value);
+    $("app").onchange = loadVersions;
+  } catch (error) {
+    toast(`catalog: ${error.message}`, true);
+  }
+}
+
+async function loadVersions() {
+  const appId = $("app").value;
+  const select = $("version");
+  select.textContent = "";
+  $("appInfo").textContent = "";
+  if (!appId) return;
+  try {
+    const data = await api(`/api/apps/${encodeURIComponent(appId)}`);
+    if ($("app").value !== appId) return;  // a newer selection won the race
+    const versions = data.versions || [];
+    for (const version of versions) {
+      const size = version.image_size ? `${(version.image_size / 1024 ** 3).toFixed(1)} GB` : "";
+      select.append(el("option", {
+        value: String(version.id),
+        textContent: `${version.image_version} · ${version.framework || ""}${version.cuda_v ? ` CUDA ${version.cuda_v}` : ""} · ${size} (#${version.id})`,
+      }));
+    }
+    if (versions.length) select.value = String(versions[0].id);
+    showVersionInfo(versions);
+    select.onchange = () => showVersionInfo(versions);
+  } catch (error) {
+    toast(`versions: ${error.message}`, true);
+  }
+}
+
+function showVersionInfo(versions) {
+  const version = versions.find((item) => String(item.id) === $("version").value);
+  $("appInfo").textContent = version
+    ? `#${version.id} · ${version.private_image_uuid || "no image uuid"} · ${version.start_command || "no start command"}`
+    : "";
+}
+
 function selectedDataCenters() {
   return [...document.querySelectorAll("#dc input:checked")].map((input) => input.value);
 }
@@ -551,16 +607,14 @@ async function deploy(event) {
     data_centers: selectedDataCenters(),
     name: $("name").value.trim(),
     disk_extra_gb: Number($("disk").value || 0),
-    app_uuid: $("appUuid").value.trim(),
-    image_id: Number($("imageId").value),
-    image_name: $("imageName").value.trim(),
-    version: $("version").value.trim(),
-    version_id: Number($("versionId").value),
+    app_id: Number($("app").value),
+    version_id: Number($("version").value),
     wait: $("waitStock").checked,
   };
   if (!body.gpu) { toast("pick a GPU slot", true); return; }
   if (!body.data_centers.length) { toast("check at least one data center", true); return; }
-  if (!body.app_uuid || !body.image_name) { toast("application fields are incomplete", true); return; }
+  if (!body.app_id) { toast("pick an application", true); return; }
+  if (!body.version_id) { toast("pick an image version", true); return; }
   button.disabled = true;
   $("deployStatus").textContent = "submitting…";
   try {
@@ -629,7 +683,7 @@ async function boot() {
     clearInterval(state.pollTimer);
     state.pollTimer = event.target.checked ? setInterval(refresh, 5000) : null;
   };
-  await Promise.all([loadGpus(), refresh(), loadHealth()]);
+  await Promise.all([loadApps(), loadGpus(), refresh(), loadHealth()]);
   state.pollTimer = setInterval(refresh, 5000);
   setInterval(loadHealth, 5000);
   setInterval(tickHealth, 1000);
