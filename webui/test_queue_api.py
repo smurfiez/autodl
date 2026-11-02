@@ -191,7 +191,7 @@ def case_history_contract() -> None:
 def case_box_shape() -> None:
     row = {"uuid": "pro-abc", "name": "murad-01"}
     box = queue_api.box_header(row)
-    assert set(box) == {"uuid", "name", "comfy", "error", "version", "counts", "running", "pending", "finished"}, box
+    assert set(box) == {"uuid", "name", "gpu", "region", "comfy", "error", "version", "counts", "running", "pending", "finished"}, box
     assert box["uuid"] == "pro-abc" and box["name"] == "murad-01", box
     assert box["error"] is None and box["comfy"] is None and box["version"] is None, box
     assert box["counts"] == {"running": 0, "pending": 0, "finished": 0}, box
