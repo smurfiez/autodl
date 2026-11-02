@@ -30,12 +30,13 @@ from fastapi import FastAPI, HTTPException, Path as PathParam, Query
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field
 
+from assets import build_router
 from collector import COLLECTOR
 
 BASE = "https://www.autodl.art"
 TOKEN_PATH = Path.home() / ".config" / "adl" / "token"
 KNOWN_HOSTS = Path.home() / ".config" / "adl" / "known_hosts"
-MARKET_DB = Path(__file__).resolve().parent.parent / "market.db"
+MARKET_DB = Path(os.environ.get("ADL_MARKET_DB") or Path(__file__).resolve().parent.parent / "market.db").expanduser()
 INSTANCES = "/api/v1/adl_server/instance/pro?page_index=1&page_size=200"
 POWER_ON = "/api/v1/adl_server/instance/pro/power_on"
 POWER_OFF = "/api/v1/adl_server/instance/pro/power_off"
@@ -87,6 +88,95 @@ def market(query: str, params: tuple = ()) -> list[dict]:
 
 
 DEPLOYABLE = "image_status = 'success' and review_status = 'pass'"
+
+CATALOG_SORTS = ("stars", "name", "updated")
+CATALOG_COLUMNS = (
+    "a.id, a.uuid, a.name, a.describe, a.tags, a.logo, a.latest_version, "
+    "a.star_num, a.use_num, a.download_num, a.created_at, a.updated_at"
+)
+TRANSLATION_COLUMNS = ", tn.text as name_en, td.text as describe_en, tt.text as tags_en"
+TRANSLATION_JOINS = (
+    "\nleft join translations tn on tn.app_id = a.id and tn.field = 'name' and tn.lang = 'en'"
+    "\nleft join translations td on td.app_id = a.id and td.field = 'describe' and td.lang = 'en'"
+    "\nleft join translations tt on tt.app_id = a.id and tt.field = 'tags' and tt.lang = 'en'"
+)
+
+
+def has_translations() -> bool:
+    """The text corpus is optional: skip the join while it is absent."""
+    try:
+        return bool(market("select 1 from sqlite_master where type = 'table' and name = 'translations'"))
+    except sqlite3.Error:
+        return False
+
+
+def with_translations(build) -> list[dict]:
+    """Run build(joined) -> (sql, params); degrade to the Chinese-only query if the
+    translations table is missing or does not match the expected columns yet."""
+    if has_translations():
+        try:
+            sql, params = build(True)
+            return market(sql, params)
+        except sqlite3.OperationalError:
+            pass  # table vanished or half-created by the writer; the rows are still worth serving
+    sql, params = build(False)
+    return market(sql, params)
+
+
+def parse_tags(value) -> list[str]:
+    if isinstance(value, list):
+        return [item for item in value if isinstance(item, str)]
+    if not isinstance(value, str) or not value.strip():
+        return []
+    try:
+        parsed = json.loads(value)
+    except ValueError:
+        return []
+    return [item for item in parsed if isinstance(item, str)] if isinstance(parsed, list) else []
+
+
+def english(row: dict, field: str):
+    value = row.get(f"{field}_en")
+    return value if isinstance(value, str) and value.strip() else row.get(field)
+
+
+def app_object(row: dict) -> dict:
+    tags = parse_tags(row.get("tags"))
+    return {
+        "id": row.get("id"),
+        "uuid": row.get("uuid"),
+        "name": row.get("name"),
+        "name_en": english(row, "name"),
+        "describe": row.get("describe"),
+        "describe_en": english(row, "describe"),
+        "tags": tags,
+        "tags_en": parse_tags(row.get("tags_en")) or tags,
+        "logo": row.get("logo"),
+        "latest_version": row.get("latest_version"),
+        "star_num": row.get("star_num"),
+        "use_num": row.get("use_num"),
+        "download_num": row.get("download_num"),
+        "versions": row.get("versions"),
+        "created_at": row.get("created_at"),
+        "updated_at": row.get("updated_at"),
+    }
+
+
+def search_filter(q: str, joined: bool) -> tuple[str, tuple]:
+    if not q:
+        return "1 = 1", ()
+    like = f"%{q}%"
+    columns = ["a.name", "a.describe", "tn.text", "td.text"] if joined else ["a.name", "a.describe"]
+    return "(" + " or ".join(f"lower({column}) like lower(?)" for column in columns) + ")", (like,) * len(columns)
+
+
+def sort_clause(sort: str, joined: bool) -> str:
+    if sort == "name":
+        name = "coalesce(nullif(tn.text, ''), a.name)" if joined else "a.name"
+        return f"{name} collate nocase asc, a.id"
+    if sort == "updated":
+        return "a.updated_at desc, a.id"
+    return "a.star_num desc, a.id"
 
 
 def resolve_image(app_id: int, version_id: int) -> dict:
@@ -445,6 +535,14 @@ async def refresh_health_once() -> None:
         await refresh_health()
 
 
+async def comfy_url(uuid: str) -> str | None:
+    """ComfyUI base URL for one instance uuid, only while it is running."""
+    for item in await instance_list():
+        if item.get("uuid") == uuid and item.get("status") == "running":
+            return safe_url(item.get("service_6006_domain"))
+    return None
+
+
 def safe_url(value: str | None) -> str | None:
     """Only trust https://<*.seetacloud.com>[:port] from the upstream record."""
     if not value:
@@ -469,6 +567,9 @@ class ConfirmRequest(BaseModel):
 
 
 Uuid = Annotated[str, PathParam(pattern=r"^[A-Za-z0-9_-]{1,64}$")]
+
+
+app.include_router(build_router(comfy_url))
 
 
 @app.get("/")
@@ -500,22 +601,53 @@ async def idle_by_dc(data_centers: list[str]) -> dict[str, dict[str, int]]:
 
 
 @app.get("/api/apps")
-async def apps(q: str = "", limit: int = 500) -> dict:
-    rows = market(
-        f"""select a.id, a.name, a.uuid, a.latest_version, a.star_num, a.use_num, a.tags,
-                   (select count(*) from versions v where v.application_id = a.id and {DEPLOYABLE}) as versions
-            from applications a
-            where ? = '' or a.name like ?
-            order by a.star_num desc, a.id
-            limit ?""",
-        (q, f"%{q}%", max(1, min(limit, 1000))),
-    )
-    return {"apps": rows, "db": MARKET_DB.name}
+async def apps(q: str = "", sort: str = "stars", limit: int = 50, offset: int = 0) -> dict:
+    q = (q or "").strip()
+    sort = sort if sort in CATALOG_SORTS else "stars"
+    limit = max(1, min(limit, 500))
+    offset = max(0, offset)
+
+    def build_rows(joined: bool) -> tuple[str, tuple]:
+        where, params = search_filter(q, joined)
+        columns = CATALOG_COLUMNS + (TRANSLATION_COLUMNS if joined else "")
+        sql = (
+            f"select {columns}, "
+            f"(select count(*) from versions v where v.application_id = a.id and {DEPLOYABLE}) as versions "
+            f"from applications a{TRANSLATION_JOINS if joined else ''} "
+            f"where {where} order by {sort_clause(sort, joined)} limit ? offset ?"
+        )
+        return sql, (*params, limit, offset)
+
+    def build_total(joined: bool) -> tuple[str, tuple]:
+        where, params = search_filter(q, joined)
+        return (
+            f"select count(*) as n from applications a{TRANSLATION_JOINS if joined else ''} where {where}",
+            params,
+        )
+
+    rows = with_translations(build_rows)
+    total = (with_translations(build_total) or [{"n": 0}])[0]["n"]
+    return {
+        "db": MARKET_DB.name,
+        "total": total,
+        "offset": offset,
+        "limit": limit,
+        "apps": [app_object(row) for row in rows],
+    }
 
 
 @app.get("/api/apps/{app_id}")
 async def app_versions(app_id: int) -> dict:
-    apps = market("select id, uuid, name, latest_version, describe from applications where id = ?", (app_id,))
+    def build_app(joined: bool) -> tuple[str, tuple]:
+        columns = CATALOG_COLUMNS + (TRANSLATION_COLUMNS if joined else "")
+        sql = (
+            f"select {columns}, "
+            f"(select count(*) from versions v where v.application_id = a.id and {DEPLOYABLE}) as versions "
+            f"from applications a{TRANSLATION_JOINS if joined else ''} where a.id = ?"
+        )
+        return sql, (app_id,)
+
+    apps = with_translations(build_app)
     if not apps:
         raise HTTPException(404, "unknown application")
     versions = market(
@@ -525,7 +657,7 @@ async def app_versions(app_id: int) -> dict:
             order by id desc""",
         (app_id,),
     )
-    return {"app": apps[0], "versions": versions}
+    return {"app": app_object(apps[0]), "versions": versions}
 
 
 @app.get("/api/gpus")

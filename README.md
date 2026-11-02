@@ -37,8 +37,10 @@ the browser.
 |---|---|
 | `GET /` | `webui/index.html`. |
 | `GET /api/config` | whether a token was found and the allowed data centers. |
-| `GET /api/apps?q=&limit=` | market catalog from `market.db`: id, name, latest version, stars, deployable version count. |
+| `GET /api/apps?q=&sort=stars|name|updated&limit=&offset=` | market catalog from `market.db`: id, name, latest version, stars, deployable version count. |
 | `GET /api/apps/{app_id}` | that app plus every version with `image_status=success` / `review_status=pass` (framework, CUDA, size, image uuid, start command). |
+| `GET /api/assets?uuid=&limit=` | ComfyUI `/history` flattened to output files, newest first (filename, subfolder, kind, dimensions, timestamp). |
+| `GET /api/assets/file?uuid=&filename=&subfolder=&type=` | streams one output file from the box (host restricted to `*.seetacloud.com`, no path traversal). |
 | `GET /api/gpus?dc=westDC3&dc=beijingDC2` | GPU slots with live idle counts per data center (`idle_by_dc`, `idle` = sum); unknown names are appended. |
 | `GET /api/instances` | normalized pro instances (newest first) and in-flight deploy/release jobs. |
 | `POST /api/instances` | `create/payg`; tries each selected data center richest-first, resolves the payg spec id, disk = (30 + extra GB). With `wait: true` a failed create becomes a polling job. |
@@ -55,6 +57,13 @@ the browser.
   the info line shows the image uuid and start command that will be sent.
   Without `market.db` the form cannot resolve an image and `/api/apps` answers
   503; rebuild the DB with `python3 tools/market.py sync`.
+- **Browse** tab: card grid of the whole catalog (logo, English name and
+  description, tags, stars, version count), server-side search, sort by
+  stars/name/updated, load-more paging, and a detail dialog with every
+  deployable version. "Select for deploy" fills the Deploy form.
+- **Assets** tab: generated files of a running ComfyUI box, newest first —
+  image/video/audio tiles served through the proxy, kind filter, click to open
+  the original. Refreshes only on demand, never on a timer.
 - Every slot is selectable. When the chosen card has no idle GPU anywhere, the
   form still queues it: a background job re-polls `gpu_type` every 15 s for up
   to 6 h and creates the instance in the first data center that frees a slot.
@@ -84,6 +93,7 @@ the browser.
 | `tools/patch_murad_box.exp` | Drives the above over SSH with `SSH_HOST` / `SSH_PORT` / `PW` / `PANEL` env vars. |
 | `webui/app.py` | FastAPI console: instance list, deploy form backed by `market.db`, power/release/deploy jobs, and the 10 s health poller (SSH + ComfyUI). Serves `index.html` and `/api/*`; the token stays server-side. |
 | `webui/index.html` | Vanilla-JS single page: deploy form, instance table, health tiles. Polls instances/health every 5 s, GPU inventory every 60 s. |
+| `webui/assets.py` | APIRouter for the ComfyUI output gallery: flattens `/history`, proxies `/view` bytes. |
 | `webui/collector.py` | Read-only stdlib script piped over SSH stdin: GPU (`nvidia-smi`), disks, load, memory, swap and top processes as one JSON object. |
 
 ## Marketplace image database
@@ -98,6 +108,15 @@ python3 tools/market.py find comfy --sort star
 python3 tools/market.py find --framework PyTorch --cuda 13.0 --limit 10
 python3 tools/market.py show 273
 python3 tools/market.py sql "select name, star_num from applications order by star_num desc limit 5"
+```
+
+`translations` caches English `name`, `describe` and `tags` per app so the UI
+never calls a translator at page time. Fill or refresh it with:
+
+```bash
+python3 tools/translate_market.py sync              # missing rows only
+python3 tools/translate_market.py sync --refresh    # re-translate everything
+python3 tools/translate_market.py show 313
 ```
 
 `applications` holds name, describe, author_note, readme, tags, stars,

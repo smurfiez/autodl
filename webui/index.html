@@ -140,8 +140,122 @@
   .hfoot { margin-top: auto; font: 11.5px var(--mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hproblem { font-size: 12px; color: var(--warn); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hcard.down .hproblem { color: var(--bad); }
+  .hidden { display: none !important; }
+  .view { display: grid; gap: 20px; min-width: 0; }
+  .tabs { display: flex; gap: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; padding: 3px; }
+  .tab {
+    background: transparent; border: 0; border-radius: 7px; padding: 5px 13px;
+    font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 6px;
+  }
+  .tab:hover:not(.active) { background: var(--panel-2); color: var(--text); border-color: transparent; }
+  .tab.active { background: var(--panel-2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+  .tab-count { font: 11px var(--mono); color: var(--muted); }
+  .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .toolbar input[type="search"] { flex: 1 1 220px; width: auto; min-width: 0; }
+  .toolbar select { width: auto; flex: 0 0 auto; }
+  .app-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px; margin-top: 14px;
+  }
+  .app-card {
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px; display: grid; gap: 8px; align-content: start; min-width: 0;
+    cursor: pointer; transition: border-color .12s, background .12s;
+  }
+  .app-card:hover { border-color: #3c4b5e; background: #1b2431; }
+  .app-card:focus-visible { outline: none; border-color: var(--accent); }
+  .app-head { display: flex; gap: 10px; align-items: center; min-width: 0; }
+  .app-logo {
+    width: 38px; height: 38px; flex: 0 0 38px; border-radius: 9px; overflow: hidden;
+    background: #0e1319; border: 1px solid var(--line); display: grid; place-items: center;
+    font: 600 16px var(--mono); color: var(--muted);
+  }
+  .app-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .app-titles { min-width: 0; display: grid; }
+  .app-name { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .app-zh { font-size: 11.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .app-desc {
+    font-size: 12.5px; color: #b6c2d0; display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em;
+  }
+  .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .chip {
+    font: 10.5px var(--mono); padding: 1px 7px; border-radius: 99px;
+    border: 1px solid var(--line); color: var(--muted); background: #111823; white-space: nowrap;
+  }
+  .app-foot { display: flex; align-items: center; gap: 10px; font: 11.5px var(--mono); color: var(--muted); margin-top: auto; flex-wrap: wrap; }
+  .app-foot button { margin-left: auto; font-size: 11.5px; padding: 4px 9px; }
+  .load-more { display: flex; justify-content: center; margin-top: 16px; }
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 30; padding: 20px; display: none;
+    background: rgba(5,8,11,.72); backdrop-filter: blur(3px); overflow-y: auto;
+  }
+  .modal-backdrop.show { display: flex; align-items: center; justify-content: center; }
+  body.modal-open { overflow: hidden; }
+  .asset-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px; margin-top: 14px;
+  }
+  .asset-grid > .empty, .asset-grid > .asset-error { grid-column: 1 / -1; }
+  .asset-error { display: grid; gap: 10px; justify-items: center; }
+  .toolbar label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .asset-tile {
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px;
+    overflow: hidden; display: flex; flex-direction: column; min-width: 0;
+  }
+  .asset-tile.clickable { cursor: zoom-in; transition: border-color .12s; }
+  .asset-tile.clickable:hover { border-color: #3c4b5e; }
+  .asset-tile.clickable:focus-visible { outline: none; border-color: var(--accent); }
+  .asset-media { background: #0a0e13; display: grid; place-items: center; overflow: hidden; }
+  .asset-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .asset-media video { width: 100%; height: 100%; object-fit: contain; background: #000; display: block; }
+  .asset-missing { font: 11px var(--mono); color: var(--muted); padding: 18px 0; }
+  .asset-audio { display: grid; gap: 8px; padding: 12px; width: 100%; }
+  .asset-audio-name { font: 11px var(--mono); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .asset-audio audio { width: 100%; }
+  .asset-foot { padding: 8px 10px; display: grid; gap: 2px; border-top: 1px solid var(--line); min-width: 0; }
+  .asset-name { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .asset-sub { font: 11px var(--mono); color: var(--muted); }
+  .lightbox { max-width: min(1100px, 96vw); }
+  .lightbox-body { display: grid; place-items: center; min-height: 0; }
+  .lightbox-body img { max-width: 100%; max-height: 68vh; object-fit: contain; border-radius: 8px; }
+  .lightbox-link { color: #8ec7ff; text-decoration: none; font-size: 12.5px; }
+  .lightbox-link:hover { text-decoration: underline; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+    width: 100%; max-width: 760px; margin: auto; max-height: calc(100vh - 40px);
+    display: flex; flex-direction: column; box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  }
+  .modal-head {
+    display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-head > div { min-width: 0; }
+  .detail-name { font-size: 15px; font-weight: 650; overflow-wrap: anywhere; }
+  .detail-sub { font: 11.5px var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  .modal-body { padding: 14px 16px; overflow-y: auto; display: grid; gap: 12px; min-height: 80px; }
+  .detail-desc { margin: 0; font-size: 13px; color: #c3cdd8; }
+  .detail-desc.zh { font-size: 12px; color: var(--muted); }
+  .detail-title { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .version-row { display: grid; gap: 3px; padding: 9px 0; border-top: 1px solid var(--line); }
+  .version-head { display: flex; gap: 10px; align-items: center; }
+  .version-name { font: 600 12.5px var(--mono); overflow-wrap: anywhere; }
+  .version-head button { margin-left: auto; font-size: 11.5px; padding: 3px 9px; }
+  .version-meta { font: 11.5px var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+  .version-cmd {
+    font: 11.5px var(--mono); color: #9fb4c9; background: #0e1319; border: 1px solid var(--line);
+    border-radius: 6px; padding: 5px 7px; overflow-wrap: anywhere;
+  }
+  .modal-foot {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 12px 16px; border-top: 1px solid var(--line);
+  }
   @media (max-width: 760px) {
     main { padding: 16px; }
+    .app-grid { grid-template-columns: 1fr; }
+    .asset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .toolbar input[type="search"] { flex: 1 1 100%; }
+    .modal-backdrop { padding: 10px; }
     .scroll { overflow-x: auto; }
     table { min-width: 0; }
     th:nth-child(3), td:nth-child(3),
@@ -155,6 +269,13 @@
 <body>
 <header>
   <h1>AutoDL deploy console <span>/ pro pay-as-you-go</span></h1>
+  <nav class="tabs" role="tablist" aria-label="Console views">
+    <button class="tab active" id="tabDeploy" role="tab" aria-selected="true" aria-controls="viewDeploy" type="button">Deploy</button>
+    <button class="tab" id="tabBrowse" role="tab" aria-selected="false" aria-controls="viewBrowse" type="button">
+      Browse <span class="tab-count" id="browseTotal"></span>
+    </button>
+    <button class="tab" id="tabAssets" role="tab" aria-selected="false" aria-controls="viewAssets" type="button">Assets</button>
+  </nav>
   <div class="spacer"></div>
   <label class="meta" style="display:flex;align-items:center;gap:6px;cursor:pointer">
     <input type="checkbox" id="auto" checked style="width:auto"> auto-refresh
@@ -165,6 +286,7 @@
 <main>
   <div class="banner" id="banner" role="alert"></div>
 
+  <div class="view" id="viewDeploy">
   <section class="card">
     <h2>Deploy instance</h2>
     <div class="card-body">
@@ -211,13 +333,86 @@
     </div>
     <div class="card-body jobs" id="jobs"></div>
   </section>
+  </div>
+
+  <section class="card hidden" id="viewBrowse" aria-labelledby="browseHeading">
+    <h2 id="browseHeading">Marketplace <span class="mono" id="browseCount"></span></h2>
+    <div class="card-body">
+      <div class="toolbar">
+        <input id="browseSearch" type="search" placeholder="Search applications…" autocomplete="off" aria-label="Search applications">
+        <select id="browseSort" aria-label="Sort applications">
+          <option value="stars">Most stars</option>
+          <option value="name">Name</option>
+          <option value="updated">Recently updated</option>
+        </select>
+        <div class="status-line" id="browseStatus"></div>
+      </div>
+      <div class="app-grid" id="appGrid"><div class="empty">loading…</div></div>
+      <div class="load-more"><button id="browseMore" type="button" hidden>Load more</button></div>
+    </div>
+  </section>
+
+  <section class="card hidden" id="viewAssets" aria-labelledby="assetsHeading">
+    <h2 id="assetsHeading">ComfyUI outputs <span class="mono" id="assetCount"></span></h2>
+    <div class="card-body">
+      <div class="toolbar">
+        <label>Instance <select id="assetInstance" aria-label="Instance"></select></label>
+        <label>Kind
+          <select id="assetKind" aria-label="Filter by kind">
+            <option value="all">All</option>
+          </select>
+        </label>
+        <button id="assetRefresh" type="button">Refresh</button>
+        <div class="status-line" id="assetStatus"></div>
+      </div>
+      <div class="asset-grid" id="assetGrid"><div class="empty">loading…</div></div>
+    </div>
+  </section>
 </main>
+
+<div class="modal-backdrop" id="lightbox">
+  <div class="modal lightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxName">
+    <div class="modal-head">
+      <div>
+        <div class="detail-name" id="lightboxName"></div>
+        <div class="detail-sub" id="lightboxSub"></div>
+      </div>
+      <button class="ghost" id="lightboxClose" type="button" style="margin-left:auto" aria-label="Close preview">Close</button>
+    </div>
+    <div class="modal-body lightbox-body" id="lightboxBody"></div>
+    <div class="modal-foot">
+      <a class="lightbox-link" id="lightboxLink" href="#" target="_blank" rel="noreferrer">Open original</a>
+      <div class="status-line" id="lightboxMeta"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="detail">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="detailName">
+    <div class="modal-head">
+      <div>
+        <div class="detail-name" id="detailName">loading…</div>
+        <div class="detail-sub" id="detailSub"></div>
+      </div>
+      <button class="ghost" id="detailClose" type="button" style="margin-left:auto" aria-label="Close application details">Close</button>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+    <div class="modal-foot">
+      <button class="primary" id="detailSelect" type="button" disabled>Select for deploy</button>
+      <div class="status-line" id="detailStatus"></div>
+    </div>
+  </div>
+</div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const $ = (id) => document.getElementById(id);
-const state = { instances: [], jobs: [], pending: new Set(), config: null, health: null, apps: [], pollTimer: null };
+const state = { instances: [], jobs: [], pending: new Set(), config: null, health: null, apps: [], pollTimer: null,
+  browse: { q: "", sort: "stars", offset: 0, total: 0, apps: [], loading: false, loaded: false, hasMore: false },
+  assets: { uuid: "", kind: "all", total: 0, kinds: {}, assets: [], loading: false, seq: 0,
+    instanceSignature: null, error: "" },
+  detail: null, lightbox: null };
 const STEPS = new Set(["creating", "created", "sys_volume_creating", "starting"]);
 const BAD = new Set(["create_failed", "pull_image_failed", "shutdown_by_starting_error"]);
 
@@ -296,6 +491,7 @@ function renderInstances() {
 
     const actions = el("td", {}, [
       el("div", { className: "row-actions" }, [
+        el("button", { textContent: "Assets", onclick: () => openAssets(item.uuid) }),
         el("button", {
           textContent: "Power on",
           disabled: busy || !["shutdown"].includes(item.status),
@@ -325,6 +521,7 @@ function renderInstances() {
       actions,
     ]));
   }
+  syncAssetInstances();
 }
 
 function renderJobs() {
@@ -502,25 +699,48 @@ function showBanner(message) {
   banner.classList.add("show");
 }
 
-const appName = (app) => `${app.name} — #${app.id}`;
+const appName = (app) => `${app.name_en || app.name} — #${app.id}`;
 
-function fillApps(filter = "") {
+// English is primary: fall back to the Chinese field and show it once when the translation is missing or identical.
+function pick(app, base) {
+  const source = (app[base] || "").trim();
+  const english = (app[`${base}_en`] || "").trim();
+  const translated = english && english !== source;
+  return { primary: translated ? english : source, secondary: translated ? source : "" };
+}
+
+function tagList(app) {
+  const english = parseTags(app.tags_en);
+  return english.length ? english : parseTags(app.tags);
+}
+
+function parseTags(value) {
+  if (Array.isArray(value)) return value.filter(Boolean).map(String);
+  if (typeof value !== "string" || !value.trim()) return [];
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) return parsed.filter(Boolean).map(String);
+  } catch { /* not json, treat as a comma list */ }
+  return value.split(",").map((tag) => tag.trim()).filter(Boolean);
+}
+
+function fillApps(filter = "", skipVersions = false) {
   const select = $("app");
   const previous = select.value;
   const needle = filter.trim().toLowerCase();
   select.textContent = "";
-  const rows = (state.apps || []).filter((app) => !needle || app.name.toLowerCase().includes(needle));
+  const rows = (state.apps || []).filter((app) => !needle || String(app.name || "").toLowerCase().includes(needle));
   for (const app of rows) {
     select.append(el("option", { value: String(app.id), textContent: appName(app) }));
   }
   const keep = rows.some((app) => String(app.id) === previous) ? previous : (rows[0] ? String(rows[0].id) : "");
   select.value = keep;
-  loadVersions();
+  if (!skipVersions) loadVersions();
 }
 
 async function loadApps() {
   try {
-    const data = await api("/api/apps");
+    const data = await api("/api/apps?limit=500");
     state.apps = data.apps || [];
     const murad = state.apps.find((app) => app.id === 313);
     fillApps();
@@ -562,6 +782,517 @@ function showVersionInfo(versions) {
   $("appInfo").textContent = version
     ? `#${version.id} · ${version.private_image_uuid || "no image uuid"} · ${version.start_command || "no start command"}`
     : "";
+}
+
+// --- tabs --------------------------------------------------------------------------------------------
+const VIEWS = ["deploy", "browse", "assets"];
+const cap = (name) => `${name[0].toUpperCase()}${name.slice(1)}`;
+
+function switchTab(name) {
+  const target = VIEWS.includes(name) ? name : "deploy";
+  for (const view of VIEWS) {
+    const active = view === target;
+    $(`view${cap(view)}`).classList.toggle("hidden", !active);
+    const tab = $(`tab${cap(view)}`);
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-selected", String(active));
+  }
+  if (target === "browse" && !state.browse.loaded) {
+    state.browse.loaded = true;
+    loadBrowse(true);
+  }
+  if (target === "assets") {
+    fillAssetInstances();
+    if (state.assets.uuid) loadAssets();
+    else renderAssets();
+  }
+}
+
+// --- browse tab --------------------------------------------------------------------------------------
+const PAGE_SIZE = 50;
+
+async function loadBrowse(reset) {
+  const browse = state.browse;
+  if (browse.loading) return;
+  browse.loading = true;
+  if (reset) {
+    browse.offset = 0;
+    browse.apps = [];
+    $("appGrid").textContent = "";
+  }
+  $("browseStatus").textContent = "loading…";
+  $("browseMore").disabled = true;
+  try {
+    const params = new URLSearchParams({ q: browse.q, sort: browse.sort, limit: String(PAGE_SIZE), offset: String(browse.offset) });
+    const data = await api(`/api/apps?${params}`);
+    const page = data.apps || [];
+    const byId = new Map();
+    for (const app of (browse.offset ? browse.apps : []).concat(page)) byId.set(app.id, app);
+    browse.apps = [...byId.values()];
+    browse.offset = browse.apps.length;
+    browse.total = Number.isFinite(Number(data.total)) ? Number(data.total) : browse.apps.length;
+    browse.hasMore = page.length > 0 && browse.offset < browse.total;
+    renderBrowse();
+  } catch (error) {
+    $("browseStatus").textContent = "";
+    if (!browse.apps.length) $("appGrid").innerHTML = `<div class="empty">${esc(error.message)}</div>`;
+    toast(`catalog: ${error.message}`, true);
+  } finally {
+    browse.loading = false;
+    $("browseMore").disabled = false;
+  }
+}
+
+function renderBrowse() {
+  const browse = state.browse;
+  const grid = $("appGrid");
+  grid.textContent = "";
+  if (!browse.apps.length) {
+    grid.append(el("div", { className: "empty" }, [browse.q ? "no application matches that search" : "no applications"]));
+    $("browseCount").textContent = "";
+    $("browseStatus").textContent = "";
+    $("browseTotal").textContent = "";
+    $("browseMore").hidden = true;
+    return;
+  }
+  for (const app of browse.apps) grid.append(appCard(app));
+  $("browseCount").textContent = `${browse.total} application${browse.total === 1 ? "" : "s"}`;
+  $("browseStatus").textContent = `showing ${browse.apps.length} of ${browse.total}`;
+  $("browseTotal").textContent = String(browse.total);
+  $("browseMore").hidden = !browse.hasMore;
+}
+
+function logoNode(app, label) {
+  const box = el("div", { className: "app-logo" }, []);
+  const letter = (label || "?").trim().charAt(0).toUpperCase() || "?";
+  box.textContent = letter;
+  if (app.logo) {
+    const img = el("img", { src: app.logo, alt: `${label} logo`, loading: "lazy" }, []);
+    img.addEventListener("error", () => { img.remove(); box.textContent = letter; });
+    box.textContent = "";
+    box.append(img);
+  }
+  return box;
+}
+
+function appCard(app) {
+  const name = pick(app, "name");
+  const desc = pick(app, "describe");
+  const tags = tagList(app);
+  const versions = Number(app.versions || 0);
+  const stars = Number(app.star_num || 0);
+
+  const footer = el("div", { className: "app-foot" }, [
+    el("span", { textContent: `★ ${stars}` }, []),
+    el("span", { className: "muted", textContent: `· ${versions} image${versions === 1 ? "" : "s"}` }, []),
+    el("button", { type: "button", textContent: "Deploy this image", onclick: (event) => {
+      event.stopPropagation();
+      openApp(app.id, card);
+    } }, []),
+  ]);
+
+  const card = el("div", {
+    className: "app-card", role: "button", tabIndex: 0,
+    "aria-label": `${name.primary || `application ${app.id}`} — open deployable images`,
+    onclick: () => openApp(app.id, card),
+    onkeydown: (event) => {
+      if (event.target !== card) return;
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openApp(app.id, card);
+      }
+    },
+  }, [
+    el("div", { className: "app-head" }, [
+      logoNode(app, name.primary),
+      el("div", { className: "app-titles" }, [
+        el("div", { className: "app-name", textContent: name.primary || `#${app.id}` }, []),
+        name.secondary ? el("div", { className: "app-zh", textContent: name.secondary }, []) : null,
+      ].filter(Boolean)),
+    ]),
+    el("div", { className: "app-desc", textContent: desc.primary || "" }, []),
+    tags.length ? el("div", { className: "chips" }, tags.slice(0, 6).map((tag) => el("span", { className: "chip", textContent: tag }, []))) : null,
+    footer,
+  ].filter(Boolean));
+  return card;
+}
+
+async function openApp(appId, opener) {
+  state.detail = { id: appId, opener, app: null, versions: [] };
+  $("detailName").textContent = "loading…";
+  $("detailSub").textContent = `#${appId}`;
+  $("detailBody").textContent = "";
+  $("detailStatus").textContent = "";
+  $("detailSelect").disabled = true;
+  $("detail").classList.add("show");
+  document.body.classList.add("modal-open");
+  $("detailClose").focus();
+  try {
+    const data = await api(`/api/apps/${encodeURIComponent(appId)}`);
+    if (!state.detail || state.detail.id !== appId) return;
+    state.detail.app = data.app || { id: appId };
+    state.detail.versions = data.versions || [];
+    renderDetail();
+  } catch (error) {
+    $("detailBody").innerHTML = `<div class="empty">${esc(error.message)}</div>`;
+    toast(`application: ${error.message}`, true);
+  }
+}
+
+function renderDetail() {
+  const detail = state.detail;
+  if (!detail) return;
+  const app = detail.app || {};
+  const name = pick(app, "name");
+  const desc = pick(app, "describe");
+  const tags = tagList(app);
+  const body = $("detailBody");
+
+  $("detailName").textContent = name.primary || `#${detail.id}`;
+  $("detailSub").textContent = `${name.secondary ? `${name.secondary} · ` : ""}#${detail.id}`;
+  body.textContent = "";
+  if (desc.primary) body.append(el("p", { className: "detail-desc", textContent: desc.primary }, []));
+  if (desc.secondary) body.append(el("p", { className: "detail-desc zh", textContent: desc.secondary }, []));
+  if (tags.length) {
+    body.append(el("div", { className: "chips" }, tags.map((tag) => el("span", { className: "chip", textContent: tag }, []))));
+  }
+  body.append(el("div", { className: "detail-title" }, [
+    `${detail.versions.length} deployable image${detail.versions.length === 1 ? "" : "s"}`,
+  ]));
+  if (!detail.versions.length) body.append(el("div", { className: "empty" }, ["no deployable image version"]));
+  for (const version of detail.versions) body.append(versionRow(version));
+  $("detailSelect").disabled = !detail.versions.length;
+  $("detailStatus").textContent = `${Number(app.star_num || 0)} stars · ${Number(app.use_num || 0)} uses`;
+}
+
+function versionRow(version) {
+  const size = version.image_size ? `${(version.image_size / 1024 ** 3).toFixed(1)} GB` : "";
+  const meta = [
+    version.framework, version.framework_v,
+    version.cuda_v ? `CUDA ${version.cuda_v}` : "",
+    size, `#${version.id}`,
+  ].filter(Boolean).join(" · ");
+  return el("div", { className: "version-row" }, [
+    el("div", { className: "version-head" }, [
+      el("span", { className: "version-name", textContent: version.image_version || `#${version.id}` }, []),
+      el("button", { type: "button", textContent: "Select", onclick: () => selectForDeploy(state.detail && state.detail.app, version.id) }, []),
+    ]),
+    el("div", { className: "version-meta", textContent: meta }, []),
+    el("div", { className: "version-meta", textContent: version.private_image_uuid || "no image uuid" }, []),
+    version.start_command ? el("div", { className: "version-cmd", textContent: version.start_command }, []) : null,
+  ].filter(Boolean));
+}
+
+function closeDetail(options) {
+  const opener = state.detail && state.detail.opener;
+  $("detail").classList.remove("show");
+  document.body.classList.remove("modal-open");
+  state.detail = null;
+  const restore = !options || options.restoreFocus !== false;
+  if (restore && opener && document.body.contains(opener)) opener.focus();
+}
+
+async function selectForDeploy(app, versionId) {
+  if (!app || !app.id) return;
+  closeDetail({ restoreFocus: false });
+  const id = String(app.id);
+  $("appFilter").value = "";
+  if (!(state.apps || []).some((entry) => String(entry.id) === id)) state.apps = [app, ...(state.apps || [])];
+  fillApps("", true);
+  $("app").value = id;
+  await loadVersions();
+  const select = $("version");
+  if (versionId !== undefined && versionId !== null) {
+    const value = String(versionId);
+    if (![...select.options].some((option) => option.value === value)) {
+      select.append(el("option", { value, textContent: `#${value}` }, []));
+    }
+    select.value = value;
+    if (typeof select.onchange === "function") select.onchange();
+  }
+  switchTab("deploy");
+  $("app").focus({ preventScroll: true });
+  $("deploy").scrollIntoView({ behavior: "smooth", block: "start" });
+  toast(`selected ${app.name || `#${id}`} for deploy`);
+}
+
+// --- assets tab --------------------------------------------------------------------------------------
+const KIND_LABELS = { image: "Images", video: "Video", audio: "Audio" };
+const KIND_ORDER = ["image", "video", "audio"];
+
+const runningInstances = () => (state.instances || []).filter((item) => item.status === "running");
+const assetPath = (asset) => `${asset.subfolder ? `${asset.subfolder}/` : ""}${asset.filename}`;
+
+function ago(ms) {
+  if (!ms) return "unknown time";
+  const seconds = Math.max(0, Math.round((Date.now() - Number(ms)) / 1000));
+  if (seconds < 60) return `${seconds}s ago`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
+}
+
+function assetFileUrl(asset) {
+  return `/api/assets/file?${new URLSearchParams({
+    uuid: state.assets.uuid,
+    filename: asset.filename,
+    subfolder: asset.subfolder || "",
+    type: asset.type || "output",
+  })}`;
+}
+
+function fillAssetInstances() {
+  const select = $("assetInstance");
+  const running = runningInstances();
+  const previous = state.assets.uuid || select.value;
+  select.textContent = "";
+  for (const item of running) {
+    select.append(el("option", { value: item.uuid, textContent: item.name || item.uuid }, []));
+  }
+  const keep = running.some((item) => item.uuid === previous) ? previous : (running[0] ? running[0].uuid : "");
+  select.value = keep;
+  state.assets.uuid = keep;
+  return keep;
+}
+
+function syncAssetInstances() {
+  const signature = runningInstances().map((item) => item.uuid).join("|");
+  if (signature === state.assets.instanceSignature) return;
+  state.assets.instanceSignature = signature;
+  const previous = state.assets.uuid;
+  fillAssetInstances();
+  if (previous && state.assets.uuid !== previous) {
+    state.assets.assets = [];
+    state.assets.total = 0;
+    state.assets.error = "";
+  }
+  if ($("viewAssets").classList.contains("hidden")) return;
+  if (state.assets.uuid) loadAssets();
+  else renderAssets();
+}
+
+function fillAssetKinds() {
+  const select = $("assetKind");
+  const kinds = state.assets.kinds || {};
+  select.textContent = "";
+  select.append(el("option", { value: "all", textContent: "All" }, []));
+  for (const kind of KIND_ORDER) {
+    if (Number(kinds[kind] || 0) > 0) {
+      select.append(el("option", { value: kind, textContent: KIND_LABELS[kind] }, []));
+    }
+  }
+  if (![...select.options].some((option) => option.value === state.assets.kind)) state.assets.kind = "all";
+  select.value = state.assets.kind;
+}
+
+async function loadAssets() {
+  const assets = state.assets;
+  const uuid = assets.uuid;
+  if (!uuid) return;
+  if (assets.loading) return;
+  assets.loading = true;
+  const seq = ++assets.seq;
+  $("assetStatus").textContent = "loading…";
+  try {
+    const data = await api(`/api/assets?uuid=${encodeURIComponent(uuid)}&limit=60`);
+    if (seq !== assets.seq) return;
+    assets.assets = data.assets || [];
+    assets.total = Number.isFinite(Number(data.total)) ? Number(data.total) : assets.assets.length;
+    assets.kinds = data.kinds || {};
+    assets.error = "";
+  } catch (error) {
+    if (seq !== assets.seq) return;
+    assets.assets = [];
+    assets.total = 0;
+    assets.kinds = {};
+    assets.error = error.message;
+  } finally {
+    if (seq === assets.seq) {
+      assets.loading = false;
+      $("assetStatus").textContent = "";
+    }
+  }
+  if (seq !== assets.seq) return;
+  fillAssetKinds();
+  renderAssets();
+}
+
+function filteredAssets() {
+  const assets = state.assets;
+  return assets.kind === "all" ? assets.assets : assets.assets.filter((asset) => asset.kind === assets.kind);
+}
+
+function renderAssets() {
+  const assets = state.assets;
+  const grid = $("assetGrid");
+  grid.textContent = "";
+  $("assetCount").textContent = assets.total ? String(assets.total) : "";
+
+  if (!runningInstances().length) {
+    grid.append(el("div", { className: "empty" }, ["start an instance to see its output"]));
+    return;
+  }
+  if (!assets.uuid) {
+    grid.append(el("div", { className: "empty" }, ["select an instance to see its output"]));
+    return;
+  }
+  if (assets.error) {
+    grid.append(el("div", { className: "empty asset-error" }, [
+      el("div", { textContent: assets.error }, []),
+      el("button", { type: "button", textContent: "Retry", onclick: () => loadAssets() }, []),
+    ]));
+    return;
+  }
+  const rows = filteredAssets();
+  if (!rows.length) {
+    grid.append(el("div", { className: "empty" }, [assets.assets.length ? "no outputs of that kind" : "no outputs yet"]));
+    return;
+  }
+  for (const asset of rows) grid.append(assetTile(asset));
+  if (rows.length !== assets.assets.length) $("assetStatus").textContent = `${rows.length} of ${assets.assets.length} shown`;
+}
+
+function assetTile(asset) {
+  const url = assetFileUrl(asset);
+  const ratio = asset.width && asset.height ? `${asset.width} / ${asset.height}` : "1 / 1";
+  const media = el("div", { className: "asset-media", style: `aspect-ratio:${ratio}` }, []);
+  const missing = () => {
+    media.textContent = "";
+    media.append(el("div", { className: "asset-missing", textContent: "missing" }, []));
+  };
+
+  if (asset.kind === "image") {
+    const img = el("img", { src: url, alt: asset.filename, loading: "lazy" }, []);
+    img.addEventListener("error", missing);
+    media.append(img);
+  } else if (asset.kind === "video") {
+    const video = el("video", { src: url, controls: true, preload: "metadata" }, []);
+    video.addEventListener("error", missing);
+    media.append(video);
+  } else {
+    media.style.aspectRatio = "auto";
+    media.append(el("div", { className: "asset-audio" }, [
+      el("div", { className: "asset-audio-name", textContent: asset.filename, title: assetPath(asset) }, []),
+      el("audio", { src: url, controls: true, preload: "metadata" }, []),
+    ]));
+  }
+
+  const foot = el("div", { className: "asset-foot" }, [
+    el("div", { className: "asset-name", textContent: asset.filename, title: assetPath(asset) }, []),
+    el("div", { className: "asset-sub" }, [
+      asset.width && asset.height ? `${asset.width}×${asset.height}` : "—",
+      ` · ${ago(asset.created_at)}`,
+    ]),
+  ]);
+
+  const tile = el("div", { className: "asset-tile" }, [media, foot]);
+  if (asset.kind === "image") {
+    tile.classList.add("clickable");
+    tile.setAttribute("role", "button");
+    tile.setAttribute("aria-label", `Open ${asset.filename}`);
+    tile.tabIndex = 0;
+    tile.addEventListener("click", () => openLightbox(asset, tile));
+    tile.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openLightbox(asset, tile);
+      }
+    });
+  }
+  return tile;
+}
+
+function openLightbox(asset, opener) {
+  const url = assetFileUrl(asset);
+  state.lightbox = { asset, opener };
+  $("lightboxName").textContent = asset.filename;
+  $("lightboxSub").textContent = assetPath(asset);
+  $("lightboxMeta").textContent = [
+    asset.width && asset.height ? `${asset.width} × ${asset.height}` : "",
+    ago(asset.created_at),
+    asset.type || "",
+  ].filter(Boolean).join(" · ");
+  $("lightboxLink").href = url;
+  const body = $("lightboxBody");
+  body.textContent = "";
+  const img = el("img", { src: url, alt: asset.filename }, []);
+  img.addEventListener("error", () => {
+    body.textContent = "";
+    body.append(el("div", { className: "empty" }, ["preview failed to load — use Open original"]));
+  });
+  body.append(img);
+  $("lightbox").classList.add("show");
+  document.body.classList.add("modal-open");
+  $("lightboxClose").focus();
+}
+
+function closeLightbox() {
+  const opener = state.lightbox && state.lightbox.opener;
+  $("lightbox").classList.remove("show");
+  document.body.classList.remove("modal-open");
+  state.lightbox = null;
+  if (opener && document.body.contains(opener)) opener.focus();
+}
+
+function openAssets(uuid) {
+  state.assets.uuid = String(uuid);
+  fillAssetInstances();
+  state.assets.uuid = String(uuid);
+  switchTab("assets");
+  loadAssets();
+  $("viewAssets").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function wireAssets() {
+  $("tabAssets").onclick = () => switchTab("assets");
+  $("assetInstance").onchange = (event) => {
+    state.assets.uuid = event.target.value;
+    loadAssets();
+  };
+  $("assetKind").onchange = (event) => {
+    state.assets.kind = event.target.value;
+    $("assetStatus").textContent = "";
+    renderAssets();
+  };
+  $("assetRefresh").onclick = () => loadAssets();
+  $("lightboxClose").onclick = () => closeLightbox();
+  $("lightbox").addEventListener("click", (event) => {
+    if (event.target === $("lightbox")) closeLightbox();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && $("lightbox").classList.contains("show")) closeLightbox();
+  });
+}
+
+function wireBrowse() {
+  $("tabDeploy").onclick = () => switchTab("deploy");
+  $("tabBrowse").onclick = () => switchTab("browse");
+  let timer = null;
+  $("browseSearch").oninput = (event) => {
+    clearTimeout(timer);
+    const value = event.target.value.trim();
+    timer = setTimeout(() => {
+      state.browse.q = value;
+      loadBrowse(true);
+    }, 250);
+  };
+  $("browseSort").onchange = (event) => {
+    state.browse.sort = event.target.value;
+    loadBrowse(true);
+  };
+  $("browseMore").onclick = () => loadBrowse(false);
+  $("detailClose").onclick = () => closeDetail();
+  $("detailSelect").onclick = () => {
+    if (state.detail && state.detail.app && state.detail.versions.length) {
+      selectForDeploy(state.detail.app, state.detail.versions[0].id);
+    }
+  };
+  $("detail").addEventListener("click", (event) => {
+    if (event.target === $("detail")) closeDetail();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && $("detail").classList.contains("show")) closeDetail();
+  });
 }
 
 function selectedDataCenters() {
@@ -679,6 +1410,8 @@ async function boot() {
   }
   $("deploy").onsubmit = deploy;
   $("refreshGpu").onclick = loadGpus;
+  wireBrowse();
+  wireAssets();
   $("auto").onchange = (event) => {
     clearInterval(state.pollTimer);
     state.pollTimer = event.target.checked ? setInterval(refresh, 5000) : null;
