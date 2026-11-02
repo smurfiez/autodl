@@ -631,6 +631,25 @@ const humanDuration = (seconds) => {
   return `${Math.floor(total / 60)}m`;
 };
 
+const REGIONS = {
+  "西北": "Northwest", "华北": "North", "华东": "East", "华南": "South",
+  "西南": "Southwest", "华中": "Central", "东北": "Northeast",
+  "北京": "Beijing", "内蒙": "Inner Mongolia", "上海": "Shanghai",
+};
+
+function regionLabel(region) {
+  let text = String(region || "");
+  for (const [zh, en] of Object.entries(REGIONS)) text = text.replace(zh, en);
+  return text.replace(/区/g, " ").replace(/([a-z])([A-Z])\b/g, "$1 $2").replace(/\s+/g, " ").trim();
+}
+
+function boxTitle(box) {
+  // a named instance wins; otherwise say what the box is, not which random uuid it has
+  if (box.name && box.name !== box.uuid) return box.name;
+  const parts = [box.gpu, regionLabel(box.region)].filter(Boolean);
+  return parts.length ? parts.join(" · ") : String(box.uuid || "").slice(4);
+}
+
 function healthCard(box) {
   const host = box.host || {};
   const gpu = (host.gpus || [])[0] || {};
@@ -685,7 +704,7 @@ function healthCard(box) {
     ? `<div class="hproblem">⚠ ${esc(box.problems.join(" · "))}</div>` : "";
 
   return `<div class="hcard ${level}">
-    <div class="htop"><span class="hname">${esc(box.name === box.uuid ? box.uuid.slice(4) : box.name)}</span>${box.name === box.uuid ? "" : `<span class="hhost">${esc(box.uuid.slice(4))}</span>`}${pill}</div>
+    <div class="htop"><span class="hname" title="${esc(box.uuid)}">${esc(boxTitle(box))}</span><span class="hhost">${esc(box.uuid.replace(/^pro-/, ""))}</span>${pill}</div>
     ${activity}
     ${gpuRow ? `<div class="grid4">${gpuRow}</div>` : ""}
     ${hostRow ? `<div class="grid4">${hostRow}</div>` : ""}
@@ -1422,7 +1441,7 @@ function queueCard(box) {
   const card = el("div", { className: `qcard ${dot}` }, [
     el("div", { className: "qhead" }, [
       el("span", { className: `qdot ${dot}` }, []),
-      el("span", { className: "qname", textContent: box.name || box.uuid, title: box.uuid }, []),
+      el("span", { className: "qname", textContent: boxTitle(box), title: box.uuid }, []),
       el("span", { className: "hhost", textContent: String(box.uuid || "").replace(/^pro-/, "") }, []),
       box.version ? el("span", { className: "hhost", textContent: `v${box.version}` }, []) : null,
       el("span", { className: `hpill ${pillClass}`.trim(), textContent: pillText }, []),

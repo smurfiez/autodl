@@ -62,6 +62,9 @@ the browser.
   description, tags, stars, version count), server-side search, sort by
   stars/name/updated, load-more paging, and a detail dialog with every
   deployable version. "Select for deploy" fills the Deploy form.
+- Every box card is titled by what the box is (`vGPU-32GB · Northwest B`) plus
+  its short uuid and ComfyUI version, so unnamed instances are distinguishable;
+  a name typed at deploy time replaces the GPU text.
 - **Queues** tab: per-box queue state — the job processing now with a live
   timer, label, models and node count, everything waiting, and the last
   finished jobs with thumbnails. Refreshes every 10 s only while the tab is

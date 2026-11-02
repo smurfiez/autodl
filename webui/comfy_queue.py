@@ -190,6 +190,8 @@ def box_header(row: dict, error: str | None = None) -> dict:
     return {
         "uuid": uuid,
         "name": row.get("name") or uuid,
+        "gpu": row.get("snapshot_gpu_alias_name") or "",
+        "region": row.get("region_name") or row.get("region_sign") or "",
         "comfy": None,
         "error": error,
         "version": None,

@@ -771,6 +771,7 @@ async def health_api() -> dict:
                 "name": item.get("name") or uuid,
                 "status": item.get("status"),
                 "gpu": item.get("snapshot_gpu_alias_name") or "",
+                "region": item.get("region_name") or item.get("region_sign") or "",
                 "comfy": safe_url(item.get("service_6006_domain")),
                 "host": entry.get("host"),
                 "comfy_state": entry.get("comfy"),
