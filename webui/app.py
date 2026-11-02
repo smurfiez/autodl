@@ -16,6 +16,7 @@ import contextlib
 import json
 import sqlite3
 import os
+import threading
 import time
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
@@ -330,37 +331,73 @@ def ssh_target(item: dict) -> tuple[str, int, str]:
     return host, port, item.get("root_password") or ""
 
 
-def host_stats(host: str, port: int, password: str) -> dict:
-    """Blocking: run collector.py on the box over password SSH. Call via to_thread."""
+ssh_clients: dict[str, paramiko.SSHClient] = {}
+ssh_locks: dict[str, threading.Lock] = {}
+
+
+def close_ssh(uuid: str) -> None:
+    client = ssh_clients.pop(uuid, None)
+    if client is not None:
+        with contextlib.suppress(Exception):
+            client.close()
+
+
+def open_ssh(host: str, port: int, password: str) -> paramiko.SSHClient:
     client = paramiko.SSHClient()
     KNOWN_HOSTS.parent.mkdir(parents=True, exist_ok=True)
     if KNOWN_HOSTS.exists():
         client.load_host_keys(str(KNOWN_HOSTS))
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # first sight only; later mismatches raise
-    try:
-        client.connect(
-            host,
-            port=port,
-            username="root",
-            password=password,
-            timeout=HOST_TIMEOUT,
-            banner_timeout=HOST_TIMEOUT,
-            auth_timeout=HOST_TIMEOUT,
-            allow_agent=False,
-            look_for_keys=False,
-        )
-        client.save_host_keys(str(KNOWN_HOSTS))
-        stdin, stdout, stderr = client.exec_command(COLLECTOR_RUN, timeout=25)
-        stdin.write(COLLECTOR)
-        stdin.channel.shutdown_write()
-        raw = stdout.read().decode("utf-8", "replace")
-        if not raw.strip():
-            # no python3 on some images (LTX/musetalk builds); keep the reason, it is remote stderr
-            reason = stderr.read().decode("utf-8", "replace").strip().splitlines()
-            raise RuntimeError((reason[-1] if reason else "collector printed nothing")[:160])
-        return json.loads(raw)
-    finally:
-        client.close()
+    client.connect(
+        host,
+        port=port,
+        username="root",
+        password=password,
+        timeout=HOST_TIMEOUT,
+        banner_timeout=HOST_TIMEOUT,
+        auth_timeout=HOST_TIMEOUT,
+        allow_agent=False,
+        look_for_keys=False,
+    )
+    client.save_host_keys(str(KNOWN_HOSTS))
+    return client
+
+
+def run_collector(client: paramiko.SSHClient) -> dict:
+    stdin, stdout, stderr = client.exec_command(COLLECTOR_RUN, timeout=25)
+    stdin.write(COLLECTOR)
+    stdin.channel.shutdown_write()
+    raw = stdout.read().decode("utf-8", "replace")
+    if not raw.strip():
+        # no python3 on some images (LTX/musetalk builds); keep the reason, it is remote stderr
+        reason = stderr.read().decode("utf-8", "replace").strip().splitlines()
+        raise RuntimeError((reason[-1] if reason else "collector printed nothing")[:160])
+    return json.loads(raw)
+
+
+def host_stats(uuid: str, host: str, port: int, password: str) -> dict:
+    """Blocking: run collector.py on the box, reusing one SSH session per instance.
+
+    AutoDL's shared sshd occasionally drops a handshake ("Error reading SSH
+    protocol banner"), so a fresh connect every 10 s was both slow and flaky.
+    Call via to_thread; the per-uuid lock keeps cycles from overlapping.
+    """
+    lock = ssh_locks.setdefault(uuid, threading.Lock())
+    with lock:
+        for attempt in (0, 1):
+            client = ssh_clients.get(uuid)
+            try:
+                if client is None or client.get_transport() is None or not client.get_transport().is_active():
+                    close_ssh(uuid)
+                    client = open_ssh(host, port, password)
+                    ssh_clients[uuid] = client
+                return run_collector(client)
+            except Exception:
+                close_ssh(uuid)
+                if attempt:
+                    raise
+                time.sleep(0.5)
+        raise RuntimeError("unreachable")
 
 
 def disk_label(path: str) -> str:
@@ -437,7 +474,7 @@ async def refresh_health() -> None:
             }
             return
 
-        stats_task = asyncio.to_thread(host_stats, host, port, password)
+        stats_task = asyncio.to_thread(host_stats, uuid, host, port, password)
         comfy_task = comfy_state(client, base) if base else None
 
         async with semaphore:
@@ -481,6 +518,9 @@ async def refresh_health() -> None:
     for uuid in list(health):
         if uuid not in alive:
             health.pop(uuid, None)
+    for uuid in list(ssh_clients):
+        if uuid not in alive:
+            close_ssh(uuid)
 
 
 def health_level(entry: dict) -> str:
