@@ -186,6 +186,50 @@
   .app-foot { display: flex; align-items: center; gap: 10px; font: 11.5px var(--mono); color: var(--muted); margin-top: auto; flex-wrap: wrap; }
   .app-foot button { margin-left: auto; font-size: 11.5px; padding: 4px 9px; }
   .load-more { display: flex; justify-content: center; margin-top: 16px; }
+  .queue-grid { display: grid; gap: 14px; margin-top: 14px; }
+  .queue-grid > .empty { grid-column: 1 / -1; }
+  .qcard {
+    background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid #39424f;
+    border-radius: 10px; padding: 12px; display: grid; gap: 10px; min-width: 0;
+  }
+  .qcard.ok { border-left-color: var(--accent); }
+  .qcard.warn { border-left-color: var(--warn); }
+  .qcard.down { border-left-color: var(--bad); }
+  .qhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+  .qdot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; background: var(--muted); }
+  .qdot.ok { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .qdot.warn { background: var(--warn); }
+  .qdot.down { background: var(--bad); }
+  .qname { font-weight: 650; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qcounts { font: 11.5px var(--mono); color: var(--muted); }
+  .qsection { display: grid; gap: 6px; min-width: 0; }
+  .qlabel { font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .qrun { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+  .qrun-label { font-size: 13px; flex: 1 1 200px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qtime { font: 600 13px var(--mono); color: #9ef0bb; }
+  .qmodels { display: flex; gap: 5px; flex-wrap: wrap; min-width: 0; }
+  .qpending { display: grid; gap: 4px; }
+  .qrow { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font: 12px var(--mono); color: var(--muted); }
+  .qrow b { color: var(--text); font-weight: 600; }
+  .qplain { font: 11.5px var(--mono); color: var(--muted); }
+  .qfin { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .qtile {
+    position: relative; flex: 0 0 96px; border: 1px solid var(--line); border-radius: 8px;
+    overflow: hidden; background: #0a0e13; min-width: 0;
+  }
+  .qtile.clickable { cursor: zoom-in; }
+  .qtile.clickable:hover { border-color: #3c4b5e; }
+  .qtile.clickable:focus-visible { outline: none; border-color: var(--accent); }
+  .qtile-media { height: 70px; display: grid; place-items: center; overflow: hidden; }
+  .qtile-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .qtile-play { font-size: 22px; color: var(--muted); }
+  .qtile-badge {
+    position: absolute; top: 4px; left: 4px; font: 10px var(--mono);
+    padding: 0 5px; border-radius: 99px;
+  }
+  .qtile-badge.success { background: rgba(63,208,122,.9); color: #05230f; }
+  .qtile-badge.error { background: rgba(240,97,109,.9); color: #2a0508; }
+  .qtile-name { font: 10.5px var(--mono); color: var(--muted); padding: 4px 5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .modal-backdrop {
     position: fixed; inset: 0; z-index: 30; padding: 20px; display: none;
     background: rgba(5,8,11,.72); backdrop-filter: blur(3px); overflow-y: auto;
@@ -275,6 +319,9 @@
       Browse <span class="tab-count" id="browseTotal"></span>
     </button>
     <button class="tab" id="tabAssets" role="tab" aria-selected="false" aria-controls="viewAssets" type="button">Assets</button>
+    <button class="tab" id="tabQueues" role="tab" aria-selected="false" aria-controls="viewQueues" type="button">
+      Queues <span class="tab-count" id="queueCount"></span>
+    </button>
   </nav>
   <div class="spacer"></div>
   <label class="meta" style="display:flex;align-items:center;gap:6px;cursor:pointer">
@@ -368,6 +415,17 @@
       <div class="asset-grid" id="assetGrid"><div class="empty">loading…</div></div>
     </div>
   </section>
+
+  <section class="card hidden" id="viewQueues" aria-labelledby="queuesHeading">
+    <h2 id="queuesHeading">Queues <span class="mono" id="queueSummary"></span></h2>
+    <div class="card-body">
+      <div class="toolbar">
+        <button id="queueRefresh" type="button">Refresh</button>
+        <div class="status-line" id="queueStatus"></div>
+      </div>
+      <div class="queue-grid" id="queues"><div class="empty">loading…</div></div>
+    </div>
+  </section>
 </main>
 
 <div class="modal-backdrop" id="lightbox">
@@ -412,6 +470,7 @@ const state = { instances: [], jobs: [], pending: new Set(), config: null, healt
   browse: { q: "", sort: "stars", offset: 0, total: 0, apps: [], loading: false, loaded: false, hasMore: false },
   assets: { uuid: "", kind: "all", total: 0, kinds: {}, assets: [], loading: false, seq: 0,
     instanceSignature: null, error: "" },
+  queues: { boxes: [], loaded: false, loading: false, seq: 0, error: "", timer: null },
   detail: null, lightbox: null };
 const STEPS = new Set(["creating", "created", "sys_volume_creating", "starting"]);
 const BAD = new Set(["create_failed", "pull_image_failed", "shutdown_by_starting_error"]);
@@ -663,6 +722,10 @@ function tickHealth() {
     if (since > 1e12) since /= 1000;
     node.textContent = clock(nowSeconds - since);
   }
+  // queue row timers ride the same 1s ticker (queues tab only, cheap when empty)
+  for (const node of document.querySelectorAll("[data-queue-start]")) {
+    node.textContent = queueElapsed(node.dataset.queueStart);
+  }
 }
 
 async function refresh() {
@@ -785,7 +848,7 @@ function showVersionInfo(versions) {
 }
 
 // --- tabs --------------------------------------------------------------------------------------------
-const VIEWS = ["deploy", "browse", "assets"];
+const VIEWS = ["deploy", "browse", "assets", "queues"];
 const cap = (name) => `${name[0].toUpperCase()}${name.slice(1)}`;
 
 function switchTab(name) {
@@ -805,6 +868,12 @@ function switchTab(name) {
     fillAssetInstances();
     if (state.assets.uuid) loadAssets();
     else renderAssets();
+  }
+  if (target === "queues") {
+    loadQueues();
+    startQueueTimer();
+  } else {
+    stopQueueTimer();
   }
 }
 
@@ -1032,9 +1101,9 @@ function ago(ms) {
   return `${Math.floor(seconds / 86400)}d ago`;
 }
 
-function assetFileUrl(asset) {
+function assetFileUrl(asset, uuid = state.assets.uuid) {
   return `/api/assets/file?${new URLSearchParams({
-    uuid: state.assets.uuid,
+    uuid,
     filename: asset.filename,
     subfolder: asset.subfolder || "",
     type: asset.type || "output",
@@ -1202,8 +1271,8 @@ function assetTile(asset) {
   return tile;
 }
 
-function openLightbox(asset, opener) {
-  const url = assetFileUrl(asset);
+function openLightbox(asset, opener, uuid = state.assets.uuid) {
+  const url = assetFileUrl(asset, uuid);
   state.lightbox = { asset, opener };
   $("lightboxName").textContent = asset.filename;
   $("lightboxSub").textContent = assetPath(asset);
@@ -1261,6 +1330,240 @@ function wireAssets() {
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && $("lightbox").classList.contains("show")) closeLightbox();
+  });
+}
+
+// --- queues tab ---------------------------------------------------------------------------------------
+const QUEUE_REFRESH_MS = 10000;
+
+const queueElapsed = (startedAt) => {
+  const start = Number(startedAt) || 0;
+  return start ? clock((Date.now() - start) / 1000) : "00:00";
+};
+
+function stopQueueTimer() {
+  clearInterval(state.queues.timer);
+  state.queues.timer = null;
+}
+
+function startQueueTimer() {
+  if (state.queues.timer || document.hidden) return;
+  if ($("viewQueues").classList.contains("hidden")) return;
+  state.queues.timer = setInterval(() => loadQueues(), QUEUE_REFRESH_MS);
+}
+
+async function loadQueues(uuid) {
+  const queues = state.queues;
+  if (!uuid && queues.loading) return;
+  const seq = ++queues.seq;
+  if (!uuid) {
+    queues.loading = true;
+    $("queueStatus").textContent = "loading…";
+  }
+  try {
+    const data = await api(`/api/queues${uuid ? `?uuid=${encodeURIComponent(uuid)}` : ""}`);
+    if (seq !== queues.seq) return;
+    const boxes = data.boxes || [];
+    if (uuid) {
+      const index = queues.boxes.findIndex((box) => box.uuid === uuid);
+      if (index >= 0) queues.boxes[index] = boxes[0];
+      else queues.boxes = boxes;
+    } else {
+      queues.boxes = boxes;
+    }
+    queues.loaded = true;
+    queues.error = "";
+  } catch (error) {
+    if (seq !== queues.seq) return;
+    if (!queues.loaded) queues.boxes = [];
+    queues.error = error.message;
+  } finally {
+    if (seq === queues.seq) {
+      queues.loading = false;
+      $("queueStatus").textContent = queues.error || "";
+    }
+  }
+  if (seq !== queues.seq) return;
+  renderQueues();
+}
+
+function renderQueues() {
+  const queues = state.queues;
+  const grid = $("queues");
+  const depth = queues.boxes.reduce((sum, box) =>
+    sum + Number((box.counts || {}).running || 0) + Number((box.counts || {}).pending || 0), 0);
+  grid.textContent = "";
+  $("queueCount").textContent = queues.loaded ? String(depth) : "";
+  $("queueSummary").textContent = queues.boxes.length
+    ? `${queues.boxes.length} instance${queues.boxes.length === 1 ? "" : "s"} · ${depth} queued` : "";
+
+  if (queues.error && !queues.boxes.length) {
+    grid.append(el("div", { className: "empty asset-error" }, [
+      el("div", { textContent: queues.error }, []),
+      el("button", { type: "button", textContent: "Retry", onclick: () => loadQueues() }, []),
+    ]));
+    return;
+  }
+  if (!queues.boxes.length) {
+    grid.append(el("div", { className: "empty", textContent: queues.loaded ? "no running instances" : "loading…" }, []));
+    return;
+  }
+  for (const box of queues.boxes) grid.append(queueCard(box));
+}
+
+function queueCard(box) {
+  const counts = box.counts || {};
+  const down = Boolean(box.error);
+  const level = down ? "down" : Number(counts.running || 0) > 0 ? "busy" : "idle";
+  const dot = { down: "down", busy: "ok", idle: "warn" }[level];
+  const pillClass = { down: "down", busy: "busy", idle: "" }[level];
+  const pillText = { down: "DOWN", busy: "PROCESSING", idle: "IDLE" }[level];
+
+  const card = el("div", { className: `qcard ${dot}` }, [
+    el("div", { className: "qhead" }, [
+      el("span", { className: `qdot ${dot}` }, []),
+      el("span", { className: "qname", textContent: box.name || box.uuid, title: box.uuid }, []),
+      el("span", { className: "hhost", textContent: String(box.uuid || "").replace(/^pro-/, "") }, []),
+      box.version ? el("span", { className: "hhost", textContent: `v${box.version}` }, []) : null,
+      el("span", { className: `hpill ${pillClass}`.trim(), textContent: pillText }, []),
+    ].filter(Boolean)),
+    el("div", { className: "qcounts", textContent:
+      `${counts.running || 0} running · ${counts.pending || 0} waiting · ${counts.finished || 0} done` }, []),
+  ]);
+
+  if (down) {
+    card.append(el("div", { className: "empty asset-error" }, [
+      el("div", { className: "hproblem", textContent: box.error, title: box.error }, []),
+      el("button", { type: "button", textContent: "Retry", onclick: () => loadQueues(box.uuid) }, []),
+    ]));
+    return card;
+  }
+  card.append(queueRunning(box), queuePending(box), queueFinished(box));
+  return card;
+}
+
+function queueModels(models) {
+  const names = (models || []).filter(Boolean);
+  if (!names.length) return null;
+  return el("span", { className: "qmodels" }, names.slice(0, 4).map((name) =>
+    el("span", { className: "chip", textContent: name, title: name }, [])));
+}
+
+function queueRunning(box) {
+  const body = el("div", { className: "qsection" }, [
+    el("div", { className: "qlabel", textContent: "Processing" }, []),
+  ]);
+  const running = box.running || [];
+  if (!running.length) {
+    body.append(el("div", { className: "qplain", textContent: "idle — nothing processing" }, []));
+    return body;
+  }
+  for (const job of running) {
+    const label = job.label || job.id || "job";
+    const time = el("span", { className: "qtime", textContent: queueElapsed(job.started_at) }, []);
+    time.dataset.queueStart = String(job.started_at || "0");
+    body.append(el("div", { className: "qrun" }, [
+      el("span", { className: "qrun-label", textContent: label, title: label }, []),
+      time,
+      queueModels(job.models),
+      el("span", { className: "qplain", textContent: `${job.nodes || 0} nodes` }, []),
+    ].filter(Boolean)));
+  }
+  return body;
+}
+
+function queuePending(box) {
+  const body = el("div", { className: "qsection" }, [
+    el("div", { className: "qlabel", textContent: "Waiting" }, []),
+  ]);
+  const pending = [...(box.pending || [])]
+    .sort((a, b) => Number(a.number || 0) - Number(b.number || 0));
+  if (!pending.length) {
+    body.append(el("div", { className: "qplain", textContent: "queue empty" }, []));
+    return body;
+  }
+  const list = el("div", { className: "qpending" }, []);
+  for (const job of pending) {
+    const label = job.label || job.id || "job";
+    list.append(el("div", { className: "qrow" }, [
+      el("b", { textContent: `#${job.number ?? "—"}` }, []),
+      el("span", { textContent: label, title: label }, []),
+      queueModels(job.models),
+    ].filter(Boolean)));
+  }
+  body.append(list);
+  return body;
+}
+
+function queueFinished(box) {
+  const body = el("div", { className: "qsection" }, [
+    el("div", { className: "qlabel", textContent: "Recently finished" }, []),
+  ]);
+  const finished = [...(box.finished || [])]
+    .sort((a, b) => Number(b.ended_at || 0) - Number(a.ended_at || 0))
+    .slice(0, 8);
+  if (!finished.length) {
+    body.append(el("div", { className: "qplain", textContent: "nothing finished yet" }, []));
+    return body;
+  }
+  const strip = el("div", { className: "qfin" }, []);
+  for (const job of finished) strip.append(queueTile(job, box.uuid));
+  body.append(strip);
+  return body;
+}
+
+function queueTile(job, uuid) {
+  const file = (job.files || [])[0];
+  if (!file) {
+    return el("div", { className: "qrow" }, [
+      el("b", { textContent: job.id || "job" }, []),
+      el("span", { textContent: job.status || "" }, []),
+    ].filter(Boolean));
+  }
+  const kind = ["image", "video"].includes(file.kind) ? file.kind : "file";
+  const asset = {
+    filename: file.filename, subfolder: file.subfolder || "", type: file.type || "output",
+    kind, width: file.width, height: file.height, created_at: job.ended_at,
+  };
+  const media = el("div", { className: "qtile-media" }, []);
+  if (kind === "image") {
+    media.append(el("img", { src: assetFileUrl(asset, uuid), alt: file.filename, loading: "lazy" }, []));
+  } else if (kind === "video") {
+    media.append(el("span", { className: "qtile-play", textContent: "▶", title: file.filename }, []));
+  } else {
+    media.append(el("div", { className: "asset-missing", textContent: "file" }, []));
+  }
+
+  const ok = job.status === "success";
+  const tile = el("div", { className: "qtile" }, [
+    el("span", { className: `qtile-badge ${ok ? "success" : "error"}`, textContent: ok ? "success" : (job.status || "error") }, []),
+    media,
+    el("div", { className: "qtile-name", textContent: file.filename, title: assetPath(asset) }, []),
+  ]);
+
+  if (kind === "image") {
+    tile.classList.add("clickable");
+    tile.tabIndex = 0;
+    tile.setAttribute("role", "button");
+    tile.setAttribute("aria-label", `Open ${file.filename}`);
+    const open = () => openLightbox(asset, tile, uuid);
+    tile.addEventListener("click", open);
+    tile.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        open();
+      }
+    });
+  }
+  return tile;
+}
+
+function wireQueues() {
+  $("tabQueues").onclick = () => switchTab("queues");
+  $("queueRefresh").onclick = () => loadQueues();
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopQueueTimer();
+    else startQueueTimer();
   });
 }
 
@@ -1412,6 +1715,7 @@ async function boot() {
   $("refreshGpu").onclick = loadGpus;
   wireBrowse();
   wireAssets();
+  wireQueues();
   $("auto").onchange = (event) => {
     clearInterval(state.pollTimer);
     state.pollTimer = event.target.checked ? setInterval(refresh, 5000) : null;

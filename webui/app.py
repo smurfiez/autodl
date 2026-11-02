@@ -32,6 +32,7 @@ from pydantic import BaseModel, Field
 
 from assets import build_router
 from collector import COLLECTOR
+from comfy_queue import build_queue_router
 
 BASE = "https://www.autodl.art"
 TOKEN_PATH = Path.home() / ".config" / "adl" / "token"
@@ -570,6 +571,7 @@ Uuid = Annotated[str, PathParam(pattern=r"^[A-Za-z0-9_-]{1,64}$")]
 
 
 app.include_router(build_router(comfy_url))
+app.include_router(build_queue_router(comfy_url, instance_list))
 
 
 @app.get("/")

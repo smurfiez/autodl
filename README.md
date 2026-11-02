@@ -39,6 +39,7 @@ the browser.
 | `GET /api/config` | whether a token was found and the allowed data centers. |
 | `GET /api/apps?q=&sort=stars|name|updated&limit=&offset=` | market catalog from `market.db`: id, name, latest version, stars, deployable version count. |
 | `GET /api/apps/{app_id}` | that app plus every version with `image_status=success` / `review_status=pass` (framework, CUDA, size, image uuid, start command). |
+| `GET /api/queues[?uuid=]` | per running box: running job (label, models, nodes, started_at), pending ordered by number, last history entries with file metadata, counts and a short per-box error. |
 | `GET /api/assets?uuid=&limit=` | ComfyUI `/history` flattened to output files, newest first (filename, subfolder, kind, dimensions, timestamp). |
 | `GET /api/assets/file?uuid=&filename=&subfolder=&type=` | streams one output file from the box (host restricted to `*.seetacloud.com`, no path traversal). |
 | `GET /api/gpus?dc=westDC3&dc=beijingDC2` | GPU slots with live idle counts per data center (`idle_by_dc`, `idle` = sum); unknown names are appended. |
@@ -61,6 +62,10 @@ the browser.
   description, tags, stars, version count), server-side search, sort by
   stars/name/updated, load-more paging, and a detail dialog with every
   deployable version. "Select for deploy" fills the Deploy form.
+- **Queues** tab: per-box queue state — the job processing now with a live
+  timer, label, models and node count, everything waiting, and the last
+  finished jobs with thumbnails. Refreshes every 10 s only while the tab is
+  open; a box that fails to answer shows its own error and a Retry button.
 - **Assets** tab: generated files of a running ComfyUI box, newest first —
   image/video/audio tiles served through the proxy, kind filter, click to open
   the original. Refreshes only on demand, never on a timer.
@@ -93,6 +98,7 @@ the browser.
 | `tools/patch_murad_box.exp` | Drives the above over SSH with `SSH_HOST` / `SSH_PORT` / `PW` / `PANEL` env vars. |
 | `webui/app.py` | FastAPI console: instance list, deploy form backed by `market.db`, power/release/deploy jobs, and the 10 s health poller (SSH + ComfyUI). Serves `index.html` and `/api/*`; the token stays server-side. |
 | `webui/index.html` | Vanilla-JS single page: deploy form, instance table, health tiles. Polls instances/health every 5 s, GPU inventory every 60 s. |
+| `webui/comfy_queue.py` | APIRouter for `/api/queues`: fans out over running boxes, summarises `/queue` and `/history`. |
 | `webui/assets.py` | APIRouter for the ComfyUI output gallery: flattens `/history`, proxies `/view` bytes. |
 | `webui/collector.py` | Read-only stdlib script piped over SSH stdin: GPU (`nvidia-smi`), disks, load, memory, swap and top processes as one JSON object. |
 
