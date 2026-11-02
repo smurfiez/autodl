@@ -111,13 +111,20 @@ python3 tools/market.py sql "select name, star_num from applications order by st
 ```
 
 `translations` caches English `name`, `describe` and `tags` per app so the UI
-never calls a translator at page time. Fill or refresh it with:
+never calls a translator at page time. The source of truth is
+`tools/translations_en.json`, committed and hand-reviewed; `sync` copies it
+into the DB and needs no network. Only apps missing from that file fall back to
+the Google endpoint, and only with `--online`.
 
 ```bash
-python3 tools/translate_market.py sync              # missing rows only
-python3 tools/translate_market.py sync --refresh    # re-translate everything
+python3 tools/translate_market.py sync              # import the curated file
+python3 tools/translate_market.py sync --online     # + translate apps not in it
+python3 tools/translate_market.py sync --refresh    # rewrite rows from the file
 python3 tools/translate_market.py show 313
 ```
+
+New catalog entries show Chinese until their English is added to
+`translations_en.json`; `sync` lists the app ids that are still missing.
 
 `applications` holds name, describe, author_note, readme, tags, stars,
 downloads and the latest version label; `versions` holds one row per image

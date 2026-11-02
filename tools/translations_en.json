@@ -1,0 +1,1773 @@
+{
+ "100": {
+  "describe": "NewBie inference out of the box Docker image",
+  "name": "NewBie Cloud",
+  "tags": [
+   "NewBie"
+  ],
+  "zh": "NewBie云端"
+ },
+ "103": {
+  "describe": "IndexttsV1.5 屾哥版 AI live broadcast assistant special version",
+  "name": "indextts v1.5 (Shen Ge Edition)",
+  "tags": [
+   "TTS"
+  ],
+  "zh": "indexttsV1.5屾哥版"
+ },
+ "105": {
+  "describe": "Alibaba’s open-source large audio model enables real-time dialogue.",
+  "name": "Fun-Audio-Chat-API",
+  "tags": [
+   "音频"
+  ],
+  "zh": "Fun-Audio-Chat-API"
+ },
+ "107": {
+  "describe": "Tsinghua open source video accelerated inference, implemented by ComfyUI",
+  "name": "Wan-TurboDiffusion-ComfyUI",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "Wan-TurboDiffusion-ComfyUI"
+ },
+ "108": {
+  "describe": "Qwen open source, super long context",
+  "name": "QwenLong-L1.5-WEBUI",
+  "tags": [
+   "Qwen"
+  ],
+  "zh": "QwenLong-L1.5-WEBUI"
+ },
+ "109": {
+  "describe": "Virtual digital human, supports multi-person dialogue",
+  "name": "AnyTalker-WEBUI",
+  "tags": [
+   "音频"
+  ],
+  "zh": "AnyTalker-WEBUI"
+ },
+ "11": {
+  "describe": "Continue the autumn leaves habit · Multiple models · Extensible",
+  "name": "LoRANext Cloud Trainer",
+  "tags": [
+   "二次元",
+   "训练"
+  ],
+  "zh": "LoRANext云端训练器"
+ },
+ "110": {
+  "describe": "Hy-MT 1.5 — Tencent Hunyuan's translation model for 38 languages including Japanese, French, Spanish, Portuguese and minority languages of China. One-click inference in the browser.",
+  "name": "Hy-MT-1.5",
+  "tags": [],
+  "zh": "Hy-MT-1.5"
+ },
+ "111": {
+  "describe": "Effect thiefX",
+  "name": "Qwen-Image 2512 + Qwen-Edit 2511 Trainer",
+  "tags": [
+   "Qwen",
+   "ComfyUI"
+  ],
+  "zh": "千问图像2512和千问编辑2511炼炉"
+ },
+ "112": {
+  "describe": "comfyui",
+  "name": "Watermelon AI",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "西瓜AI"
+ },
+ "113": {
+  "describe": "Qwen-Image picture generation, built-in workflow",
+  "name": "Qwen-Image-2512-ComfyUI",
+  "tags": [
+   "Qwen",
+   "ComfyUI"
+  ],
+  "zh": "Qwen-Image-2512-ComfyUI"
+ },
+ "114": {
+  "describe": "Dasiwa anime image-to-video, strongest edition",
+  "name": "Dasiwa Anime Image-to-Video",
+  "tags": [
+   "二次元",
+   "ComfyUI"
+  ],
+  "zh": "Dasiwa动漫最强图生视频"
+ },
+ "115": {
+  "describe": "Tencent open source, 3D action generation model, web page reasoning",
+  "name": "HY-Motion-1.0-WEBUI",
+  "tags": [
+   "混元"
+  ],
+  "zh": "HY-Motion-1.0-WEBUI"
+ },
+ "116": {
+  "describe": "Tencent’s open source small-size model, small but powerful",
+  "name": "Youtu-LLM-WEBUI",
+  "tags": [],
+  "zh": "Youtu-LLM-WEBUI"
+ },
+ "117": {
+  "describe": "The LTX2.3 model includes a complete workflow",
+  "name": "LTX 2.3 Super Image",
+  "tags": [
+   "LTX-2"
+  ],
+  "zh": "LTX2.3超级镜像"
+ },
+ "118": {
+  "describe": "Tencent Hunyuan HY-Motion, text-to-action generation model",
+  "name": "HY-Motion-1.0",
+  "tags": [],
+  "zh": "HY-Motion-1.0"
+ },
+ "119": {
+  "describe": "Alibaba’s latest open source, embedded multi-modal large model",
+  "name": "Qwen3-VL-Embedding-WEBUI",
+  "tags": [],
+  "zh": "Qwen3-VL-Embedding-WEBUI"
+ },
+ "12": {
+  "describe": "The main branch of the so vits svc project, with shallow diffusion and more features, priority is given to using higher versions of the Docker image. Dataset production and vocoder fine-tuning have been integrated, ready to use out of the box.",
+  "name": "so-vits-svc",
+  "tags": [
+   "音频"
+  ],
+  "zh": "so-vits-svc"
+ },
+ "120": {
+  "describe": "Alibaba’s open source, embedded sorting model",
+  "name": "Qwen3-VL-Reranker-WEBUI",
+  "tags": [],
+  "zh": "Qwen3-VL-Reranker-WEBUI"
+ },
+ "121": {
+  "describe": "VLLM web page/API reasoning-Alibaba’s open source medical multi-modal large model",
+  "name": "LingShu Medical",
+  "tags": [],
+  "zh": "LingShu-灵枢医疗"
+ },
+ "122": {
+  "describe": "Lightricks latest open source, text, image-to-video, built-in workflow",
+  "name": "LTX2-LTX-2-ComfyUI",
+  "tags": [],
+  "zh": "LTX2-LTX-2-ComfyUI"
+ },
+ "123": {
+  "describe": "Character consistency is very strong, infinite loop",
+  "name": "Wan 2.2 Remix v2.1 — Multi-Angle First/Last Frame Loop",
+  "tags": [
+   "wan2.2",
+   "视频"
+  ],
+  "zh": "Wan2.2-Remix-v2.1多角度首尾帧无限循环长视频"
+ },
+ "124": {
+  "describe": "Smooth Mix Wan 2.2 14B",
+  "name": "Smooth-Mix-Wan-Img2Vid-V2.0",
+  "tags": [],
+  "zh": "Smooth-Mix-Wan-Img2Vid-V2.0"
+ },
+ "125": {
+  "describe": "Zhipu open source text-to-image, picture editing large model",
+  "name": "GLM-Image",
+  "tags": [],
+  "zh": "GLM-Image"
+ },
+ "126": {
+  "describe": "Google's open source medical model, vllm web page, API reasoning",
+  "name": "MedGemma-1.5-WEBUI",
+  "tags": [],
+  "zh": "MedGemma-1.5-WEBUI"
+ },
+ "127": {
+  "describe": "A video and image generation service accelerated by the lightx2v framework to quickly generate video images. Based on the models wan2.2, qwen-image, and z-image, it supports AI client MCP calls.",
+  "name": "Lightning AI Video & Image Generation (Wan, Qwen, Z-Image, MCP)",
+  "tags": [
+   "Z-Image",
+   "Qwen",
+   "ComfyUI",
+   "wan2.2"
+  ],
+  "zh": "闪电AI视频、图片生成、Wan、Qwen、ZImage、MCP"
+ },
+ "128": {
+  "describe": "All models can be refined, and there are models that can be chosen",
+  "name": "LTX-2 Video Training Toolkit",
+  "tags": [
+   "LTX-2",
+   "训练",
+   "视频"
+  ],
+  "zh": "LTX-2视频训练aitoolkit"
+ },
+ "129": {
+  "describe": "Black Forest Studio's latest open source, text-to-image, picture editing ComfyUI",
+  "name": "Flux-2-Klein-ComfyUI",
+  "tags": [
+   "Flux.2",
+   "ComfyUI"
+  ],
+  "zh": "Flux-2-Klein-ComfyUI"
+ },
+ "13": {
+  "describe": "AI-Toolkit — the most widely used model trainer, latest November build",
+  "name": "AI-Toolkit",
+  "tags": [
+   "Flux.2",
+   "Qwen",
+   "LORA",
+   "AI-Toolkit",
+   "wan2.2"
+  ],
+  "zh": "AI-Toolkit"
+ },
+ "130": {
+  "describe": "Google open source, multi-modal translation large model, web page reasoning",
+  "name": "TranslateGemma-WEBUI",
+  "tags": [],
+  "zh": "TranslateGemma-WEBUI"
+ },
+ "131": {
+  "describe": "Doka trainer supports Flux2, Qwen/2512, edit2509/2511, LTX-2, Z-image Kontext and other models, and the visual UI supports 5090.",
+  "name": "Multi-GPU Trainer: FLUX2 / LTX2 / Qwen / Kontext",
+  "tags": [
+   "LTX-2",
+   "Flux.2",
+   "ComfyUI"
+  ],
+  "zh": "最新多卡训练器FLUX2_LTX2_QWEN_KONTEXT"
+ },
+ "132": {
+  "describe": "Flux-2-klein-4b/9b training",
+  "name": "FLUX.2 Klein LoRA Training",
+  "tags": [],
+  "zh": "flux-2-klein-LORA训练"
+ },
+ "133": {
+  "describe": "The latest open source of Zhipu, web page and API reasoning",
+  "name": "GLM-4.7-Flash-WEBUI",
+  "tags": [],
+  "zh": "GLM-4.7-Flash-WEBUI"
+ },
+ "134": {
+  "describe": "First version",
+  "name": "Lingguang Short Drama",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "灵光短剧"
+ },
+ "135": {
+  "describe": "Step Star open source, large visual model",
+  "name": "Step3-VL-10B-WEBUI",
+  "tags": [],
+  "zh": "Step3-VL-10B-WEBUI"
+ },
+ "136": {
+  "describe": "The official YOLO26 algorithm project library ultralytics, the environment has been configured, and training and inference can be run with one click",
+  "name": "YOLO26",
+  "tags": [],
+  "zh": "YOLO26"
+ },
+ "137": {
+  "describe": "Qwen open source, TTS/voice interaction large model",
+  "name": "Qwen3-TTS-ALL-WEB",
+  "tags": [],
+  "zh": "Qwen3-TTS-ALL-WEB"
+ },
+ "138": {
+  "describe": "Open source artificial intelligence music basic model",
+  "name": "HeartMuLa-ComfyUI",
+  "tags": [],
+  "zh": "HeartMuLa-ComfyUI"
+ },
+ "14": {
+  "describe": "GPT-SoVITS, V4 has been updated, [prioritize the use of newer Docker images], requires less materials, shorter training time, and more controllable emotions",
+  "name": "GPT-SoVITS",
+  "tags": [
+   "音频"
+  ],
+  "zh": "GPT-SoVITS"
+ },
+ "141": {
+  "describe": "The latest large OCR model, web/API reasoning, VLLM acceleration",
+  "name": "LightOnOCR-2-WEBUI",
+  "tags": [],
+  "zh": "LightOnOCR-2-WEBUI"
+ },
+ "142": {
+  "describe": "DeepSeek's latest open source OCR large model",
+  "name": "DeepSeek-OCR-2-WEBUI",
+  "tags": [
+   "OCR",
+   "DeepSeek"
+  ],
+  "zh": "DeepSeek-OCR-2-WEBUI"
+ },
+ "143": {
+  "describe": "Z-Image's latest open source, basic model, more flexible and free",
+  "name": "Z-Image-Base-ComfyUI",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "Z-Image-Base-ComfyUI"
+ },
+ "148": {
+  "describe": "Built-in CUDA13.0, updateable model library, cloud painting toolbox",
+  "name": "ComfyUI FP4 Pioneer Edition",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "ComfyUI-FP4先锋版"
+ },
+ "149": {
+  "describe": "Manmi Wenchuang focuses on using AI to empower creativity, helping you easily create AI comics, dynamic comics, AI animation, etc., so that your imagination can come to life on the screen.",
+  "name": "Manmi Creative v3",
+  "tags": [],
+  "zh": "漫迷文创v3"
+ },
+ "15": {
+  "describe": "Xiaomi's latest audio understanding, generation, dialogue generation large model, web page reasoning.",
+  "name": "MiMo-Audio-TTS — Xiaomi Open-Source Audio Model",
+  "tags": [
+   "音频"
+  ],
+  "zh": "MiMo-Audio-TTS-小米开源音频综合大模型"
+ },
+ "150": {
+  "describe": "ComfyUI cloud workstation",
+  "name": "ZX-AI-Comfy-UI",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "ZX-AI-Comfy-UI"
+ },
+ "151": {
+  "describe": "Conferences, trainings, speeches, speech-to-text, supports multiple people",
+  "name": "VibeVoice-ASR-WEBUI",
+  "tags": [
+   "音频"
+  ],
+  "zh": "VibeVoice-ASR-WEBUI"
+ },
+ "154": {
+  "describe": "A simple tool for fine-tuning diffusion models without complex parameter configuration.",
+  "name": "flower-trainer",
+  "tags": [
+   "训练"
+  ],
+  "zh": "flower-trainer"
+ },
+ "155": {
+  "describe": "Quickly load ComfyUI application, pre-installed efficient nodes, and exclusive high-definition repair workflow;",
+  "name": "ComfyUI Creator",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "ComfyUI创作者"
+ },
+ "156": {
+  "describe": "Reasoning, training",
+  "name": "Qwen3.5-ALL",
+  "tags": [],
+  "zh": "Qwen3.5-ALL"
+ },
+ "157": {
+  "describe": "Flux-Klein trainer",
+  "name": "diffusion-pipe — Latest FLUX Klein Trainer",
+  "tags": [
+   "训练"
+  ],
+  "zh": "diffusion-pipe最新flux-Klein丹炉"
+ },
+ "158": {
+  "describe": "Run YOLO26 with one click, and all data and model environments have been configured!",
+  "name": "YOLOv26",
+  "tags": [],
+  "zh": "YOLOv26"
+ },
+ "159": {
+  "describe": "Comic and live-action workflow, benchmarking Banana Pro and Jimeng.. Added ltx2.3, wan2.2, video and picture removal of watermarks and subtitles, removal of mosaics, face changing, dress changing and other workflows",
+  "name": "Comic & Live-Action Drama Generator — AI Resource Hub",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "漫剧and真人剧制造机-AI资源仓"
+ },
+ "16": {
+  "describe": "Wall-facing intelligent open source TTS large model",
+  "name": "VoxCPM — High-Performance TTS Model",
+  "tags": [
+   "TTS",
+   "音频"
+  ],
+  "zh": "VoxCPM-性能超强TTS大模型"
+ },
+ "160": {
+  "describe": "Version 2026.6.11",
+  "name": "OpenClaw Multi-Agent Multi-Robot",
+  "tags": [
+   "OpenClaw"
+  ],
+  "zh": "OpenClaw多智能体多机器人"
+ },
+ "161": {
+  "describe": "AI video creation",
+  "name": "Tianyi Media",
+  "tags": [
+   "漫剧"
+  ],
+  "zh": "添翼传媒"
+ },
+ "162": {
+  "describe": "Local model",
+  "name": "OpenClaw 3.13 Local Models",
+  "tags": [
+   "OpenClaw"
+  ],
+  "zh": "openclaw3.13本地模型"
+ },
+ "163": {
+  "describe": "Text, image-to-video",
+  "name": "LTX-2.3-ComfyUI",
+  "tags": [],
+  "zh": "LTX-2.3-ComfyUI"
+ },
+ "164": {
+  "describe": "OpenClaw, built-in API, cardless mode enabled",
+  "name": "OpenClaw",
+  "tags": [
+   "OpenClaw"
+  ],
+  "zh": "OpenClaw"
+ },
+ "165": {
+  "describe": "Raising lobster has never been easier",
+  "name": "Claw Lobster CoPaw — Chinese Web Edition",
+  "tags": [
+   "OpenClaw"
+  ],
+  "zh": "Claw龙虾-CoPaw-中文网页版"
+ },
+ "166": {
+  "describe": "Supports Xiaohongshu publishing and has access to long-term memory function",
+  "name": "OpenClaw — Lobster Farming",
+  "tags": [
+   "OpenClaw"
+  ],
+  "zh": "openclaw-养龙虾"
+ },
+ "167": {
+  "describe": "A leading-edge TTS project open sourced by Fish audio",
+  "name": "fish_speech",
+  "tags": [],
+  "zh": "fish_speech"
+ },
+ "17": {
+  "describe": "Cloud real-time voice changer, ready to use out of the box, supports 50 series",
+  "name": "voice_changer",
+  "tags": [
+   "音频"
+  ],
+  "zh": "voice_changer"
+ },
+ "177": {
+  "describe": "Qwen3.5 Claude training optimized version, updated V3 version",
+  "name": "Qwen3.5-Claude-4.6-Qwopus3.5",
+  "tags": [],
+  "zh": "Qwen3.5-Claude-4.6-Qwopus3.5"
+ },
+ "178": {
+  "describe": "Wan2.7 one-stop comic production platform",
+  "name": "LumenX Studio — Comic Production Platform",
+  "tags": [
+   "漫剧"
+  ],
+  "zh": "LumenXStudio漫剧制作平台"
+ },
+ "18": {
+  "describe": "Hy-MT 1.5 — Tencent Hunyuan's translation model covering 38 languages, including Japanese, French, Spanish, Portuguese and minority languages of China. One-click inference in the browser.",
+  "name": "comfyui",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "comfyui"
+ },
+ "182": {
+  "describe": "Baidu open source OCR large model",
+  "name": "QianFan-OCR-WEBUI",
+  "tags": [],
+  "zh": "QianFan-OCR-WEBUI"
+ },
+ "183": {
+  "describe": "MiniMax-H3+Ltx2.3 latest version+Wan2.2 speed version",
+  "name": "ComfyUI Comic Image — MiniMax-H3 for ZiZi Animation",
+  "tags": [
+   "漫剧",
+   "ComfyUI"
+  ],
+  "zh": "Comfyui-漫剧专用镜像-MiniMax-H3适配字字动画"
+ },
+ "184": {
+  "describe": "With api and webui",
+  "name": "heygem_server",
+  "tags": [],
+  "zh": "heygem_server"
+ },
+ "185": {
+  "describe": "Run 98% of gguf files with one click",
+  "name": "GGUF-Quick-Start-WEBUI",
+  "tags": [],
+  "zh": "GGUF-Quick-Start-WEBUI"
+ },
+ "186": {
+  "describe": "Batch generation of openai API interfaces",
+  "name": "vLLM Self-Hosted API Distribution",
+  "tags": [],
+  "zh": "vLLM自主API分发系统"
+ },
+ "187": {
+  "describe": "Test",
+  "name": "Black Pomelo Animation — IndexTTS2",
+  "tags": [
+   "音频"
+  ],
+  "zh": "黑柚动画-IndexTTs2"
+ },
+ "189": {
+  "describe": "LTX, wan2.2, qwen, z-image, flux2",
+  "name": "LTX 2.3 All-in-One Trainer",
+  "tags": [
+   "LTX2.3"
+  ],
+  "zh": "LTX2.3一站式训练器"
+ },
+ "19": {
+  "describe": "Wan2.2 image-to-video - first/last frame video-with workflow",
+  "name": "Wan 2.2 Video with Workflow",
+  "tags": [
+   "wan2.2",
+   "视频"
+  ],
+  "zh": "wan2.2视频带工作流"
+ },
+ "191": {
+  "describe": "Speech synthesis",
+  "name": "ZiZi Animation IndexTTS2",
+  "tags": [],
+  "zh": "字字动画indextts2"
+ },
+ "192": {
+  "describe": "Voice cloning",
+  "name": "Tianyi Media TTS Voice Cloning",
+  "tags": [],
+  "zh": "添翼传媒tts语音克隆"
+ },
+ "193": {
+  "describe": "The most powerful AI face-changing Facefusion, with multiple built-in models, multiple face detection and fusion devices",
+  "name": "FaceFusion AI Face Swap",
+  "tags": [],
+  "zh": "Facefusion-AI换脸"
+ },
+ "195": {
+  "describe": "The latest version of Wanxiang supports image and video editing",
+  "name": "Wan2.7-ComfyUI",
+  "tags": [],
+  "zh": "Wan2.7-ComfyUI"
+ },
+ "196": {
+  "describe": "It is comfyui generated 5 times faster",
+  "name": "LTX 2.3 AI Short-Drama Studio",
+  "tags": [],
+  "zh": "LTX2.3AI短剧神器Studio"
+ },
+ "198": {
+  "describe": "Z-Image Studio — a very fast Z-Image generation engine",
+  "name": "Z-image-Studio",
+  "tags": [],
+  "zh": "Z-image-Studio"
+ },
+ "20": {
+  "describe": "The latest stable versions of official YOLOv8 and YOLO11, the environment has been configured and can be run and trained directly with one click, simple and efficient",
+  "name": "YOLOv8",
+  "tags": [],
+  "zh": "YOLOv8"
+ },
+ "200": {
+  "describe": "Built-in webui, TTS text-to-speech, supports high-concurrency and fast controllable sound cloning in 30+ languages ​​and multiple Chinese dialects, and native output is 48kHz. vllm high concurrency and high throughput",
+  "name": "VoxCPM2_TTS",
+  "tags": [],
+  "zh": "VoxCPM2_TTS"
+ },
+ "201": {
+  "describe": "Using vllm to accelerate RTF up to 0.4, API supports ZiZi Animation and Sound Valley",
+  "name": "IndexTTS + vLLM Accelerated Voice Cloning for ZiZi Animation — Sound Valley",
+  "tags": [],
+  "zh": "Indextts-vllm超级加速语音克隆对接字字动画-音谷"
+ },
+ "202": {
+  "describe": "AIGC video special software is directly available and starts automatically at boot. If you want the software, please contact the author.",
+  "name": "Kamehameha AI — LTX / Qwen Image",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "龟派气功AI--LTX-QWEN-image"
+ },
+ "203": {
+  "describe": "OmniVoice TTS speech synthesis, speech cloning service",
+  "name": "Kamehameha AI — OmniVoice",
+  "tags": [],
+  "zh": "龟派气功AI--OmniVoice"
+ },
+ "204": {
+  "describe": "Covering character makeup, text-to-video, image-to-video, reference image-to-video, first frame raw video, and lip-sync, the MiniMax-H3 Conch complete video generation suite is now officially launched!",
+  "name": "Comic A/V Sync Workflow — Built for ZiZi Animation",
+  "tags": [],
+  "zh": "漫剧音画同步工作流-完美适配字字动画"
+ },
+ "205": {
+  "describe": "Multi-picture editing-support word by word",
+  "name": "FLUX.2 Klein — Multi-Reference Image Editing",
+  "tags": [],
+  "zh": "FLUX.2-Klein-多参考图生图编辑"
+ },
+ "206": {
+  "describe": "OmniVoice official sample Uyghur translation version",
+  "name": "OmniVoice Uyghur TTS",
+  "tags": [],
+  "zh": "OmniVoice维吾尔语TTS"
+ },
+ "207": {
+  "describe": "MiniMax-H3 with 5x speed and high image quality together — ultimate edition",
+  "name": "MiniMax H3 — 5x Speed, High Quality (Ultimate)",
+  "tags": [
+   "漫剧"
+  ],
+  "zh": "MiniMax_H3_5倍速与高画质并存_终极版"
+ },
+ "209": {
+  "describe": "The new king of the strongest images",
+  "name": "GPT-Image Text-to-Image & Single-Image Editing",
+  "tags": [],
+  "zh": "GPT2文生图-单图编辑-图像编辑"
+ },
+ "211": {
+  "describe": "The project supports cardless mode operation for only 0.15 months per hour and seconds.",
+  "name": "moyinAI — Batch AI Comic & Short-Drama Production",
+  "tags": [],
+  "zh": "moyinAI影视生产级工具流程话批量ai漫剧短剧生成系统"
+ },
+ "212": {
+  "describe": "ArcTable-ComfyUI",
+  "name": "ArcTable-ComfyUI",
+  "tags": [],
+  "zh": "ArcTable-ComfyUI"
+ },
+ "213": {
+  "describe": "Pure API is super cheap",
+  "name": "GPT-Image 2 / NanoBanana 2 Storyboard Canvas",
+  "tags": [],
+  "zh": "GptImage2-NanoBanana2分镜画布"
+ },
+ "214": {
+  "describe": "Uyghur text-to-speech audio special edition",
+  "name": "OmniVoice Uyghur TTS — WebUI Voice Edition",
+  "tags": [],
+  "zh": "omniVoice维吾尔语TTS在线webui文本转语音声音专版"
+ },
+ "216": {
+  "describe": "Gpt-image2 picture 1k2k4k HD veo3gork30 Extend workflow in seconds",
+  "name": "GPT-Image 2 (1K/2K/4K) + Veo3 / Grok 30s Video",
+  "tags": [],
+  "zh": "gpt-image2图片1k2k4k高清veo3gork30秒"
+ },
+ "218": {
+  "describe": "Commercially available API, fully capable of concurrency",
+  "name": "Digital Human Short-Drama Workflow",
+  "tags": [
+   "漫剧"
+  ],
+  "zh": "超牛数字人-短剧工作流"
+ },
+ "219": {
+  "describe": "Multi-language TTS model open sourced by Xiaomi team",
+  "name": "OmniVoice",
+  "tags": [],
+  "zh": "OmniVoice"
+ },
+ "22": {
+  "describe": "8 TB model library, plugin workflows, and a concurrent commercial API",
+  "name": "zealman-ComfyUI",
+  "tags": [
+   "Flux.2",
+   "Z-Image",
+   "ComfyUI"
+  ],
+  "zh": "zealman-ComfyUI"
+ },
+ "222": {
+  "describe": "One-stop training Zimage",
+  "name": "None-Z-Trainer Platform",
+  "tags": [],
+  "zh": "None-Z-trainer训练平台"
+ },
+ "223": {
+  "describe": "WULI Canvas — ComfyUI, multi-platform APIs and the Jimeng CLI in one place",
+  "name": "WULI Canvas",
+  "tags": [],
+  "zh": "WULI画布"
+ },
+ "224": {
+  "describe": "AI short drama, AI comic drama, character sound design, audio book with one click",
+  "name": "Luoshu Zhichuang",
+  "tags": [],
+  "zh": "洛书智创"
+ },
+ "227": {
+  "describe": "AI-Toolkit training model",
+  "name": "Model Training: FLUX / Qwen / Z-Image / Ideogram 4",
+  "tags": [],
+  "zh": "模型训练FLUX-Qwen-Zimage-Ideogram4"
+ },
+ "228": {
+  "describe": "The training script has been updated to June 26, and supports Krea2, FLUX, SDXL and other model training; the model has been pre-installed;",
+  "name": "AI-Toolkit Cloud Training",
+  "tags": [],
+  "zh": "AI-Toolkit云服务器训练"
+ },
+ "229": {
+  "describe": "Many workflows",
+  "name": "Bernini Scail2 — Motion Transfer & Character Swap",
+  "tags": [],
+  "zh": "Bernini-Scail2动作迁移角色替换"
+ },
+ "23": {
+  "describe": "The latest stable version of official YOLO11, the environment has been configured, you can run and train directly with one click, simple and efficient",
+  "name": "YOLO11",
+  "tags": [],
+  "zh": "YOLO11"
+ },
+ "230": {
+  "describe": "ZiZi Animation -sdvr2",
+  "name": "ZiZi Animation — SDVR2",
+  "tags": [],
+  "zh": "字字动画-sdvr2"
+ },
+ "231": {
+  "describe": "VoxCPM2 sound cloning system webui ready to use",
+  "name": "VoxCPM2 Voice Cloning WebUI — Ready to Use",
+  "tags": [],
+  "zh": "VoxCPM2声音克隆系统webui开机即用"
+ },
+ "233": {
+  "describe": "Workflow runs through the built-in model, cuda13",
+  "name": "ComfyUI NVFP4 / INT8 Image",
+  "tags": [],
+  "zh": "Comfyui-NVFP4-INT8镜像"
+ },
+ "234": {
+  "describe": "Single/double/triple/four-person lip-sync workflow, exclusive to the entire network! There is also a version for 5-7 people with lip-sync and multi-person mixed single MP3 fully automatic voiceprint (ISRA NICE) split for 1-7 people. Business inquiries are welcome!",
+  "name": "1–4 Person Lip-Sync Workflow — AI Resource Hub (June 27)",
+  "tags": [],
+  "zh": "全网首发-1至4人对口型工作流-AI资源仓-6月27日"
+ },
+ "235": {
+  "describe": "Voice cloning: supports 14 languages ​​including Chinese, English, Japanese, and Korean",
+  "name": "Confucius4-TTS WebUI — NetEase Youdao Multilingual Voice",
+  "tags": [],
+  "zh": "Confucius4-TTS-WebUI网易有道开源的多语言语音"
+ },
+ "237": {
+  "describe": "It runs automatically at boot",
+  "name": "Video Subtitle Remover — WebUI Chinese Edition",
+  "tags": [],
+  "zh": "视频字幕去除器webUI二次修改汉化版"
+ },
+ "238": {
+  "describe": "Built-in Boogu full model, custom switching, 4080S, image output in 3 seconds",
+  "name": "Boogu-ComfyUI",
+  "tags": [],
+  "zh": "Boogu-ComfyUI"
+ },
+ "24": {
+  "describe": "With training management panel, supports modifying batch_size",
+  "name": "FLUXGYM Remix Edition",
+  "tags": [
+   "FluxGym"
+  ],
+  "zh": "FLUXGYM魔改版"
+ },
+ "240": {
+  "describe": "NVIDIA open source, text-generated 3D human/robot actions. Enter a text description to generate 3D animations such as walking, dancing, running, etc. Supports three skeletons: human body (SOMA), human body precision (SMPLX), and G1 robot",
+  "name": "Kimodo",
+  "tags": [],
+  "zh": "Kimodo"
+ },
+ "241": {
+  "describe": "ComfyUI interior design rendering",
+  "name": "ComfyUI Interior Design Rendering",
+  "tags": [],
+  "zh": "ComfyUI室内设计渲染"
+ },
+ "242": {
+  "describe": "KaniTTS multi-language text-to-speech synthesis sound synthesis sound cloning English Chinese English Arabic Korean German",
+  "name": "KaniTTS WebUI — Multilingual Speech Synthesis & Voice Cloning",
+  "tags": [],
+  "zh": "KaniTTS-WebUI多国语言文本语音合成声音合成声音克隆"
+ },
+ "244": {
+  "describe": "Dedicated Docker image for digital folding DFCine infinite canvas",
+  "name": "DFCine Infinite Canvas Image",
+  "tags": [],
+  "zh": "数字折叠DFCine无限画布专用镜像"
+ },
+ "245": {
+  "describe": "HunyuanOCR 1.5 — Tencent Hunyuan's end-to-end OCR vision-language model",
+  "name": "HunyuanOCR 1.5 — Tencent End-to-End OCR Vision-Language Model",
+  "tags": [],
+  "zh": "HunyuanOCR1.5腾讯混元推出的端到端OCR视觉语言模型"
+ },
+ "246": {
+  "describe": "AI video workbench supports video analysis, AI dubbing, picture and video lip-sync, and intelligent editing.",
+  "name": "MOMO Digital Human Workbench",
+  "tags": [],
+  "zh": "MOMO数字人工作台"
+ },
+ "247": {
+  "describe": "Sd2.0 video sd2.5 dream volcano engine video large model api generates video web client online using seedance2.0",
+  "name": "sd2.0 / sd2.5 Video — Dreamina Volcano Engine Video API",
+  "tags": [],
+  "zh": "sd2.0视频sd2.5即梦火山引擎视频大模型api生成视频we"
+ },
+ "248": {
+  "describe": "The AI ​​animation and comic creation environment based on ComfyUI is preset with 85 formal workflows and commonly used extension nodes classified by capabilities and models, and supports text-to-image, image-to-image, video generation and image processing.",
+  "name": "Frame AI",
+  "tags": [],
+  "zh": "绘帧AI"
+ },
+ "249": {
+  "describe": "Krea2 removes AI-flavored photography-level image generation - image editing",
+  "name": "Krea 2 — Photorealistic Image Generation & Editing",
+  "tags": [],
+  "zh": "krea2去AI味摄影级生图-图像编辑"
+ },
+ "25": {
+  "describe": "Ready to use, automatically write description, 1 in 2 minutes",
+  "name": "Smooth-Mix-Wan 2.2 Video — Ready to Use",
+  "tags": [
+   "wan2.2",
+   "视频"
+  ],
+  "zh": "Smooth-Mix-Wan-2.2视频开机即食版"
+ },
+ "252": {
+  "describe": "MiniMax-H3 with a 500-step speed-up while keeping image quality high",
+  "name": "MiniMax H3 — 500 Speed-Up, High Quality",
+  "tags": [],
+  "zh": "MINIMAX-H3提速500高画质"
+ },
+ "253": {
+  "describe": "Minimax video production FLUX3-Qwen2.1-Moss e-commerce map",
+  "name": "MiniMax Video: FLUX3 / Qwen / Moss — E-Commerce Voice & Music",
+  "tags": [],
+  "zh": "Minimax视频FLUX3-Qwen-Moss电商声音克隆音乐"
+ },
+ "254": {
+  "describe": "Multi-card concurrency, multi-reference second-order sampling,minimah3 image generation",
+  "name": "MiniMax H3 — Image + Text to Video, First/Last Frame",
+  "tags": [],
+  "zh": "minimaxH3图文生视频首尾帧"
+ },
+ "255": {
+  "describe": "MiniMax H3 in ComfyUI — one-click start with sample scripts ready to run",
+  "name": "MiniMax-H3-ComfyUI",
+  "tags": [],
+  "zh": "MiniMax-H3-ComfyUI"
+ },
+ "256": {
+  "describe": "Live-action drama workflow, a workflow that is comparable to Banana and Jimeng. Added ltx2.3, wan2.2, video and picture removal of watermarks and subtitles, removal of mosaics, face changing, dress changing and other workflows",
+  "name": "Live-Action Drama Maker — AI Resource Hub (Fast)",
+  "tags": [],
+  "zh": "真人剧制造机-AI资源仓-极速版"
+ },
+ "258": {
+  "describe": "MinimaxH3lora training, ai-tookit localization",
+  "name": "MiniMax H3 LoRA Training + AI-Toolkit Chinese Edition",
+  "tags": [],
+  "zh": "MinimaxH3lora训练、ai-tookit汉化"
+ },
+ "26": {
+  "describe": "Qwen3-VL one-click reasoning",
+  "name": "Qwen3-VL-QuickStart",
+  "tags": [
+   "Qwen"
+  ],
+  "zh": "Qwen3-VL-QuickStart"
+ },
+ "261": {
+  "describe": "Minimalist comfyui—minimax-h3 Docker image",
+  "name": "ComfyUI MiniMax-H3 AIGC — Uncle Zhang",
+  "tags": [],
+  "zh": "ComfyUI_MINIMAX-H3-AIGC张大叔"
+ },
+ "262": {
+  "describe": "LTX2.5 video generation",
+  "name": "LTX 2.5 Video Generation",
+  "tags": [],
+  "zh": "LTX2.5视频生成"
+ },
+ "263": {
+  "describe": "Manmi Wenchuang MiniMax H3 video generation environment (ComfyUI). Pre-installed H3 related dependencies and scripts, supporting text-to-video / reference video",
+  "name": "Manmi Creative — H3 Video Model",
+  "tags": [],
+  "zh": "漫迷文创-H3视频模型"
+ },
+ "264": {
+  "describe": "LTX 2.5 in ComfyUI — text-to-video, image-to-video and first/last-frame generation, very fast",
+  "name": "LTX2.5-ComfyUI",
+  "tags": [],
+  "zh": "LTX2.5-ComfyUI"
+ },
+ "265": {
+  "describe": "Multi-language, emotion, Agent call",
+  "name": "Index-TTS-2.5",
+  "tags": [],
+  "zh": "Index-TTS-2.5"
+ },
+ "266": {
+  "describe": "AI-Toolkit Chinese version trainer, image, video, audio LoRA training, multi-model examples, public model mounting.",
+  "name": "AI-Toolkit Chinese Trainer",
+  "tags": [],
+  "zh": "Ai-toolkit中文版训练器"
+ },
+ "267": {
+  "describe": "Updated environment, compatible with all graphics cards",
+  "name": "Wanxiang AI",
+  "tags": [],
+  "zh": "万象AI"
+ },
+ "268": {
+  "describe": "Index-TTS2.5 sound clone latest version webui",
+  "name": "IndexTTS 2.5 Voice Cloning WebUI — Latest",
+  "tags": [],
+  "zh": "Index-TTS2.5声音克隆最新版webui"
+ },
+ "269": {
+  "describe": "LTX2.5 image-to-video first/last frame",
+  "name": "LTX 2.5 Image-to-Video, First/Last Frame",
+  "tags": [],
+  "zh": "LTX2.5图生视频首尾帧"
+ },
+ "272": {
+  "describe": "DeepSeek Harness (dsh) WebUI online running version",
+  "name": "DeepSeek Harness Web — Run Online",
+  "tags": [],
+  "zh": "DeepSeek_Harness_dsh_Web在线运行版web"
+ },
+ "273": {
+  "describe": "ComfyUI Chinese integrated version, image, video, and audio creation, built-in workflow, and public model mounting.",
+  "name": "ComfyUI Chinese Edition",
+  "tags": [],
+  "zh": "ComfyUI中文整合版"
+ },
+ "275": {
+  "describe": "Qwen 3.8 All-Fast — fast inference with DSH, OpenClaw, Codex and Claude Code support",
+  "name": "Qwen3.8-ALL-FAST",
+  "tags": [],
+  "zh": "Qwen3.8-ALL-FAST"
+ },
+ "276": {
+  "describe": "MiniMax-H3 (Conch open source model) text-to-video, image-to-video, 9 reference image-to-video, 469 grid diagram, voice processing, there are more MiniMax-H3 related workflows, and they will continue to be updated!",
+  "name": "Baiman — MiniMax H3 5x Speed, High Quality (Ultimate)",
+  "tags": [],
+  "zh": "佰漫-MiniMax_H3_5倍速与高画质并存_终极版"
+ },
+ "277": {
+  "describe": "Say goodbye to token anxiety with fool-proof calls",
+  "name": "ds-harness Qwen 3.8 API — Remote & Local Calls",
+  "tags": [],
+  "zh": "ds-harness-qwen3.8API远程本地调用"
+ },
+ "278": {
+  "describe": "Comfy RemoteMCP",
+  "name": "Comfy-MCP",
+  "tags": [],
+  "zh": "Comfy-MCP"
+ },
+ "279": {
+  "describe": "Greatly improves inference speed and supports various agents such as DSH/OpenClaw/Codex/Claude Code/Agent.",
+  "name": "Qwen 3.8 — Production Grade",
+  "tags": [],
+  "zh": "Qwen3.8-生产级"
+ },
+ "280": {
+  "describe": "Zhiyu Zhiyan-AI short drama-MiniMaxH3 video generation",
+  "name": "AI Short Drama — MiniMax H3 Video",
+  "tags": [],
+  "zh": "AI短剧-MiniMaxH3视频生成"
+ },
+ "282": {
+  "describe": "Storyboard-continued on camera-martial arts flow-literary drama flow",
+  "name": "MiniMax H3 Comic Workbench",
+  "tags": [],
+  "zh": "minimaxH3漫剧工作台"
+ },
+ "283": {
+  "describe": "Index-tts2.5 speech synthesis",
+  "name": "Wanxiang AI — IndexTTS 2.5",
+  "tags": [],
+  "zh": "万象AI-index-tts2.5"
+ },
+ "284": {
+  "describe": "Can clone 24 national languages ​​and 21 Chinese dialects",
+  "name": "FireRed-TTS3 — Voice Cloning, 24 Languages, 21 Chinese Dialects",
+  "tags": [],
+  "zh": "FireRed-TTS3声音克隆24国家语言21种中国方言"
+ },
+ "285": {
+  "describe": "TRAM3D — reconstruct human trajectories and turn footage into white-model video, one click in the WebUI",
+  "name": "TRAM3D — Human Trajectory Reconstruction to White-Model Video",
+  "tags": [],
+  "zh": "TRAM3D人体轨迹重建视频转白模视频webui一键生成"
+ },
+ "286": {
+  "describe": "Supports all kinds of cool articles, novels and short dramas",
+  "name": "Mochao AI — Automatic Novel-to-Short-Drama Screenwriting",
+  "tags": [],
+  "zh": "墨潮AI小说短剧自动编剧系统"
+ },
+ "287": {
+  "describe": "Generate short videos based on creative content",
+  "name": "U55 Short-Film Creative Workbench",
+  "tags": [],
+  "zh": "U55短片创意工作台"
+ },
+ "288": {
+  "describe": "Text-to-image, image-to-image",
+  "name": "LLaDA-Image-ComfyUI",
+  "tags": [],
+  "zh": "LLaDA-Image-ComfyUI"
+ },
+ "29": {
+  "describe": "Microsoft produces TTS large model, Chinese web page reasoning",
+  "name": "VibeVoice-TTS-Web-UI",
+  "tags": [
+   "音频"
+  ],
+  "zh": "VibeVoice-TTS-Web-UI"
+ },
+ "290": {
+  "describe": "Ant LingBot-World-V2 is an interactive world model with 1.3/14B parameters. It can generate controlled video based on a single image, text and camera trajectory, achieving efficient generation in seconds with low memory usage.",
+  "name": "lingbot-world",
+  "tags": [],
+  "zh": "lingbot-world"
+ },
+ "291": {
+  "describe": "Vocal and audio separation",
+  "name": "Vocal & Audio Separation",
+  "tags": [],
+  "zh": "人声和音频分离"
+ },
+ "295": {
+  "describe": "Local AI composition workstation",
+  "name": "YuE2-Workspace",
+  "tags": [],
+  "zh": "YuE2-Workspace"
+ },
+ "297": {
+  "describe": "MiniMax H3 Turbo — 3-step accelerated film production: 18 accelerated workflows, full director's console, watermark removal, multi-reference comics; all 79 models preinstalled, no login required, API included",
+  "name": "MiniMax-H3 Turbo Video — 3-Step Director's Console",
+  "tags": [],
+  "zh": "MiniMax-H3极速视频-3步加速导演台"
+ },
+ "299": {
+  "describe": "FaceFusion 3.9.0 is a photo and video face swap, supporting facial enhancement, expression editing and lip synchronization; it has built-in commonly used models and web workbench, and can manage API/MCP through Jupyter.",
+  "name": "FaceFusion — Image & Video Face Swap",
+  "tags": [],
+  "zh": "FaceFusion图片视频换脸"
+ },
+ "30": {
+  "describe": "TTS large model created by neuphonic",
+  "name": "neutts-air-webui",
+  "tags": [
+   "TTS",
+   "音频"
+  ],
+  "zh": "neutts-air-webui"
+ },
+ "300": {
+  "describe": "Out-of-the-box image and video workflows",
+  "name": "ComfyUI Image & Video Toolbox",
+  "tags": [],
+  "zh": "ComfyUI图片视频工具箱"
+ },
+ "303": {
+  "describe": "Short Feather AI creation platform — comic, audiobook and digital-human workshops with unlimited renders (bring your own compute)",
+  "name": "Short Feather AI",
+  "tags": [],
+  "zh": "短羽Ai"
+ },
+ "304": {
+  "describe": "AI resource warehouse authorization-H3 full set of workflow",
+  "name": "Come Grab Them All",
+  "tags": [],
+  "zh": "都来接"
+ },
+ "305": {
+  "describe": "ComfyUI infinite canvas",
+  "name": "ComfyUI Infinite Canvas",
+  "tags": [],
+  "zh": "ComfyUI无限画布"
+ },
+ "306": {
+  "describe": "Hengxi Yunchuang-MiniMax-H3 (Conch open source model) text-to-video, image-to-video, 9 reference image-to-video, 469 grid diagram, voice processing, there will be more MiniMax-H3 related work",
+  "name": "Hengxi Cloud — MiniMax H3 10x Speed, Automatic Film Generation",
+  "tags": [],
+  "zh": "恒羲云创-MiniMax_H3_10倍极速与高画质_自动生成电影"
+ },
+ "307": {
+  "describe": "Generate a 3D model from a picture, integrate Hunyuan3D-2, TRELLIS.2, TripoSplat, Pixel3D and other open source 3D models, and provide out-of-the-box Com",
+  "name": "Image-to-3D Model ComfyUI Workflow",
+  "tags": [],
+  "zh": "图生3D模型ComfyUI工作流"
+ },
+ "308": {
+  "describe": "Super performance trainer Diffsyth customized version",
+  "name": "Next-DiffSynth",
+  "tags": [],
+  "zh": "Next-DiffSynth"
+ },
+ "309": {
+  "describe": "The required models for Krita have been configured to support Krita, and ComfyUI can also be used alone.",
+  "name": "ComfyUI_Krita",
+  "tags": [],
+  "zh": "ComfyUI_Krita"
+ },
+ "31": {
+  "describe": "DeepSeek inference, fine-tuning and merge in three ways — WebUI, API and CLI — plus vLLM for fast inference",
+  "name": "DeepSeek — One-Click Inference, Fine-Tuning & Merging",
+  "tags": [
+   "DeepSeek"
+  ],
+  "zh": "DeepSeek一键推理、微调、合并"
+ },
+ "310": {
+  "describe": "The production workbench I made for the AI ​​comic. Wensheng, Tusheng, multi-pictures, first/last frame, dubbing, action reference and super score are all configured. You can use it when you turn on the computer and open the web page; it supports API and batch management of works. MiniMax H3 driver.",
+  "name": "Jidouqie Film Crew — MiniMax-H3 Comic Workbench",
+  "tags": [],
+  "zh": "吉豆茄出片员工-MiniMax-H3漫剧工作台"
+ },
+ "311": {
+  "describe": "You set the direction and acceptance, and the agent operates the workbench throughout the process: selecting workflow, setting parameters, writing prompt words, generating and retrieving results, and continuing to the next round after review. Support H3 video and Qwen pictures.",
+  "name": "MiniMax H3 — Amos.pro Full Workbench",
+  "tags": [],
+  "zh": "MiniMaxH3-Amos.pro全功能工作台"
+ },
+ "312": {
+  "describe": "ComfyUI + MiniMax-H3 Ref2VA video generation environment. Model is built in",
+  "name": "MiniMax H3 Director's Console",
+  "tags": [],
+  "zh": "MinimaxH3导演台"
+ },
+ "313": {
+  "describe": "124 prebuilt workflows across 9 categories + portfolio + queue + HTTP API/Webhook, including Qwen-Image, Krea2, LTX2.5 and MiniMax-H3",
+  "name": "MURAD-ComfyUI",
+  "tags": [],
+  "zh": "MURAD-ComfyUI"
+ },
+ "314": {
+  "describe": "MiniMax-H3 e-commerce video reproduction workflow on ComfyUI - video replacement/product replacement/copywriting replacement (replacing the original video voice)",
+  "name": "E-Commerce Video Remake — MiniMax H3",
+  "tags": [],
+  "zh": "电商视频复刻MinimaxH3"
+ },
+ "315": {
+  "describe": "Install Musubi, the default is Krea 2 LoRA. Start training immediately after booting. Open 6006 to start training.",
+  "name": "Next-Musubi",
+  "tags": [],
+  "zh": "Next-Musubi"
+ },
+ "32": {
+  "describe": "Completely replace the character with the picture according to the video, retaining actions, expressions, and camera movements",
+  "name": "Wan 2.2 Animate — Character Transfer",
+  "tags": [
+   "视频"
+  ],
+  "zh": "wan2.2animate角色迁移"
+ },
+ "320": {
+  "describe": "Chinese direct WebUI and API; public model mounting, supports MOSS-Image, FLUX.2, Qwen-Image, Z-Image, including independent tools, compatible version updates and bidirectional data",
+  "name": "WebUI Chinese Edition",
+  "tags": [],
+  "zh": "webui中文整合版"
+ },
+ "321": {
+  "describe": "VLLM Chinese integrated version, Chinese dialogue, original picture Q&A, API, 16 public models, supports updates and data migration.",
+  "name": "vLLM Chinese Edition",
+  "tags": [],
+  "zh": "vLLM中文整合版"
+ },
+ "322": {
+  "describe": "The image generates controllable trajectory video and supports automatic calling of Agent.",
+  "name": "World-Model Video Generation Workbench",
+  "tags": [],
+  "zh": "世界模型视频生成工作台"
+ },
+ "323": {
+  "describe": "Supports script analysis, character/scene/prop material, automatic or guided storyboarding, and MiniMax H3 lens production and merging process. Guided storyboards can manually fill in prompt words; text and images use the user's own YuCloud API, and points are not collected for the time being.",
+  "name": "LianG AI Short-Drama Workbench",
+  "tags": [],
+  "zh": "LianG-AI短剧工作台"
+ },
+ "326": {
+  "describe": "Out-of-the-box FLUX.3 Image Klein image generation application supports text-to-image, image-to-image, and multi-reference image synthesis",
+  "name": "FLUX3 Image Klein — Image Generation",
+  "tags": [],
+  "zh": "FLUX3_Image_Klein图像生成"
+ },
+ "327": {
+  "describe": "The latest version of ComfyUI Docker image supports a variety of large model tasks",
+  "name": "ComfyUI_",
+  "tags": [],
+  "zh": "ComfyUI_"
+ },
+ "329": {
+  "describe": "ComfyUI is a MiniMax H3 video + synchronized audio generation environment in the form of a director's desk. It has built-in FastH3 Omni (QAD NVFP4) weighted soft chain, director's desk plug-in and secondary acquisition/",
+  "name": "MiniMax H3 Omni Director's Console",
+  "tags": [],
+  "zh": "MiniMax-H3-Omni导演台"
+ },
+ "33": {
+  "describe": "A large model of video generation (video generation from text and images) developed by Meituan, and web page inference (only supports single card).",
+  "name": "LongCat Video Generation",
+  "tags": [
+   "视频"
+  ],
+  "zh": "龙猫视频生成-LongCat-Video"
+ },
+ "330": {
+  "describe": "Bilibili’s official open source TTS model zero-sample timbre clone·emotional control",
+  "name": "IndexTTS 2.5 + vLLM — High-Concurrency Speech Synthesis",
+  "tags": [],
+  "zh": "IndexTTS-2.5-vLLM高并发语音合成"
+ },
+ "34": {
+  "describe": "A script that supports weight downloading, training (pre-training, fine-tuning, human alignment), inference, evaluation, quantification and deployment of 600+ large models and 300+ multi-modal large models.",
+  "name": "Swift-All",
+  "tags": [],
+  "zh": "Swift-All"
+ },
+ "37": {
+  "describe": "Fully automatic AI film-making",
+  "name": "ZiZi Animation",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "字字动画"
+ },
+ "38": {
+  "describe": "QwenImage and QwenImageEdit work out of the box.",
+  "name": "Qwen-Image-Edit-2511-ComfyUI",
+  "tags": [
+   "Qwen",
+   "ComfyUI"
+  ],
+  "zh": "Qwen-Image-Edit-2511-ComfyUI"
+ },
+ "39": {
+  "describe": "Suitable for 5090, with training tutorials",
+  "name": "Kontext LoRA Training",
+  "tags": [
+   "LORA",
+   "训练"
+  ],
+  "zh": "Kontext-lora训练"
+ },
+ "40": {
+  "describe": "FLUX2 can be trained",
+  "name": "FLUX2 LoRA Training Collection",
+  "tags": [
+   "Flux.2",
+   "LORA",
+   "训练"
+  ],
+  "zh": "FLUX2-LORA训练大全"
+ },
+ "41": {
+  "describe": "DeepSeek-OCR web inference, one-click start",
+  "name": "DeepSeek-OCR — Web Inference",
+  "tags": [
+   "OCR",
+   "DeepSeek"
+  ],
+  "zh": "DeepSeek-OCR网页推理"
+ },
+ "42": {
+  "describe": "QWEN-image-lora training",
+  "name": "Qwen-Image LoRA Training",
+  "tags": [
+   "Qwen",
+   "LORA",
+   "训练"
+  ],
+  "zh": "QWEN-image-lora训练"
+ },
+ "43": {
+  "describe": "SoulX text generates dialect speech",
+  "name": "SoulX — Text to Dialect Speech",
+  "tags": [
+   "音频"
+  ],
+  "zh": "soulX文字生成方言语音"
+ },
+ "44": {
+  "describe": "Built-in 30+ workflows and large models (built-in Nunchaku), covering most commonly used models",
+  "name": "ComfyUI-ALL",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "ComfyUI-ALL"
+ },
+ "45": {
+  "describe": "Text-to-speech, supports Mandarin and dialects, multi-person conversations, and multiple rounds of conversations",
+  "name": "SoulX-Podcast-TTS-APP",
+  "tags": [
+   "TTS"
+  ],
+  "zh": "SoulX-Podcast-TTS-APP"
+ },
+ "46": {
+  "describe": "Using text visual compression technology, rapid reasoning on web pages",
+  "name": "Glyph — Full-Novel Long-Text Reasoning",
+  "tags": [
+   "小说"
+  ],
+  "zh": "Glyph-超长文本推理-整本小说"
+ },
+ "48": {
+  "describe": "Super cool workflow",
+  "name": "Wan 2.2 LightX2V I2V — High-Motion Image-to-Video",
+  "tags": [
+   "wan2.2",
+   "视频"
+  ],
+  "zh": "WAN2.2-LightX2V-I2V超动态图生视频"
+ },
+ "49": {
+  "describe": "Supports replacement of designated parts, manual and automatic",
+  "name": "Mocha Video Character Replacement",
+  "tags": [
+   "视频"
+  ],
+  "zh": "Mocha视频角色替换"
+ },
+ "5": {
+  "describe": "Call LLaMA-Factory with one click for easy fine-tuning. Integrate a variety of auxiliary functions.",
+  "name": "Llama-Factory — One-Click Setup",
+  "tags": [
+   "LLM",
+   "llama"
+  ],
+  "zh": "llama-factory一键使用"
+ },
+ "50": {
+  "describe": "Sora watermark removal tool",
+  "name": "SoraWatermarkCleaner",
+  "tags": [
+   "Sora"
+  ],
+  "zh": "SoraWatermarkCleaner"
+ },
+ "51": {
+  "describe": "Super restored picture character",
+  "name": "BindWeave — Single & Multi-Character Image-to-Video",
+  "tags": [
+   "视频"
+  ],
+  "zh": "BindWeave单多角色图生视频"
+ },
+ "52": {
+  "describe": "Hunyuan 3D (2.1), supports texture, web page reasoning",
+  "name": "HunYuan3D-2.1-WEB",
+  "tags": [],
+  "zh": "HunYuan3D-2.1-WEB"
+ },
+ "53": {
+  "describe": "Index-tts-v2.0-vllm accelerated webui version",
+  "name": "IndexTTS 2.0 + vLLM Accelerated WebUI",
+  "tags": [
+   "TTS"
+  ],
+  "zh": "index-tts-v2.0-vllm加速webui版"
+ },
+ "54": {
+  "describe": "Text-to-speech (TTS), audio editing (multiple emotions), dialect support",
+  "name": "Step-Audio-EditX-WEB-APP",
+  "tags": [
+   "音频"
+  ],
+  "zh": "Step-Audio-EditX-WEB-APP"
+ },
+ "55": {
+  "describe": "Wan2.2 video generation, built-in full workflow",
+  "name": "Wan-ComfyUI-ALL",
+  "tags": [
+   "ComfyUI",
+   "视频"
+  ],
+  "zh": "Wan-ComfyUI-ALL"
+ },
+ "56": {
+  "describe": "Multimodal large model, produced by Baidu",
+  "name": "ERNIE-4.5-VL-28B-A3B-Thinking",
+  "tags": [],
+  "zh": "ERNIE-4.5-VL-28B-A3B-Thinking"
+ },
+ "57": {
+  "describe": "(Upgraded to PaddleOCR-VL-1.5 version) Top 1 model in the OCR field",
+  "name": "PaddleOCR-VL-WEB",
+  "tags": [
+   "OCR"
+  ],
+  "zh": "PaddleOCR-VL-WEB"
+ },
+ "58": {
+  "describe": "7TB model library, 100+ sets of image and video generation workflows",
+  "name": "ComfyUI Cloud Paint Universal",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "ComfyUI云绘通用版"
+ },
+ "59": {
+  "describe": "Support SVC4.1+RVC+DDSP6.3 (trainable)",
+  "name": "Real-Time Puppet Covers",
+  "tags": [
+   "音频"
+  ],
+  "zh": "木偶实时翻唱"
+ },
+ "6": {
+  "describe": "Qwen3 model fine-tuning and visual reasoning with one click. Free download model",
+  "name": "Qwen3 — One-Click Inference & Fine-Tuning",
+  "tags": [
+   "Qwen"
+  ],
+  "zh": "Qwen3一键推理微调"
+ },
+ "61": {
+  "describe": "Weibo open source, low-cost small parameter model",
+  "name": "VibeThinker-1.5B-APP",
+  "tags": [
+   "LLM"
+  ],
+  "zh": "VibeThinker-1.5B-APP"
+ },
+ "62": {
+  "describe": "Shanghai Artificial Intelligence Laboratory and other open source text-to-image, image editing, image expansion, style conversion large models, ComfyUI can be used out of the box (no download required, built-in workflow)",
+  "name": "Lumina-DiMOO-App-ComfyUI",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "Lumina-DiMOO-App-ComfyUI"
+ },
+ "63": {
+  "describe": "The most natural AI group photo model, supports up to 4 people taking photos together, ready to use right out of the box",
+  "name": "WithAnyone-ComfyUI",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "WithAnyone-ComfyUI"
+ },
+ "64": {
+  "describe": "ComfyUI pure version, no card issue",
+  "name": "ComfyUI Clean Edition",
+  "tags": [],
+  "zh": "ComfyUI纯净版"
+ },
+ "65": {
+  "describe": "GUI relay video",
+  "name": "Wan 2.2 Animate — Character Animation & Swap",
+  "tags": [
+   "ComfyUI",
+   "wan2.2"
+  ],
+  "zh": "Wan2.2-Animate角色动画与替换"
+ },
+ "66": {
+  "describe": "Musubi-tuner trainer",
+  "name": "zealman-musubi-GUI",
+  "tags": [
+   "Qwen",
+   "LORA",
+   "训练"
+  ],
+  "zh": "zealman-musubi-GUI"
+ },
+ "67": {
+  "describe": "Sora2 HD grok video API domestic transfer veo3 video Google Banana 2 workflow",
+  "name": "Sora 2 / Veo 3 / Google Banana 2 — Video API Relay",
+  "tags": [],
+  "zh": "sora2高清grok视频API国内中转veo3视频谷歌香蕉2"
+ },
+ "68": {
+  "describe": "[Pix Studio Home Page]: The largest and best public Docker image, which integrates images-video-language clone-digital human",
+  "name": "E-Commerce Model Multi-View Pose Batch Editor",
+  "tags": [
+   "电商",
+   "ComfyUI"
+  ],
+  "zh": "电商模特多视角角色IP批量姿势修改神器"
+ },
+ "69": {
+  "describe": "Tencent Hunyuan open source text and image-to-video model, small parameters",
+  "name": "HunyuanVideo-1.5-ComfyUI",
+  "tags": [
+   "混元",
+   "ComfyUI",
+   "视频"
+  ],
+  "zh": "HunyuanVideo-1.5-ComfyUI"
+ },
+ "7": {
+  "describe": "Model training designed for SDXL Docker image",
+  "name": "SD Model Training",
+  "tags": [
+   "训练"
+  ],
+  "zh": "SD模型训练"
+ },
+ "70": {
+  "describe": "Xiaomi’s open source visual large language model has outstanding results in three tasks: task planning, operability prediction and spatial understanding. Interface reasoning.",
+  "name": "MiMo-Embodied-7B-APP",
+  "tags": [],
+  "zh": "MiMo-Embodied-7B-APP"
+ },
+ "71": {
+  "describe": "Tencent Hunyuan open source OCR (text recognition) large model",
+  "name": "HunyuanOCR-WEB-APP",
+  "tags": [
+   "混元",
+   "OCR"
+  ],
+  "zh": "HunyuanOCR-WEB-APP"
+ },
+ "72": {
+  "describe": "Flux.2 image generation, ready to use",
+  "name": "Flux.2-ComfyUI",
+  "tags": [
+   "Flux.2",
+   "ComfyUI"
+  ],
+  "zh": "Flux.2-ComfyUI"
+ },
+ "73": {
+  "describe": "Z-Image — Alibaba's strongest open-source image model: photorealistic output, a 4090 renders in ~10 s, ahead of Flux 2 and Qwen",
+  "name": "Z-Image — Top Image Generation Model",
+  "tags": [
+   "Z-Image",
+   "ComfyUI"
+  ],
+  "zh": "Z-Image最强生图模型"
+ },
+ "74": {
+  "describe": "Alibaba’s latest open source, text-to-image large model",
+  "name": "Z-Image-ComfyUI",
+  "tags": [
+   "Z-Image",
+   "ComfyUI"
+  ],
+  "zh": "Z-Image-ComfyUI"
+ },
+ "75": {
+  "describe": "There is no routine available when starting up",
+  "name": "MiniMax Video Production: FLUX3, Qwen 2.1, Moss",
+  "tags": [
+   "Flux.2",
+   "Z-Image",
+   "ComfyUI"
+  ],
+  "zh": "Minimax视频制作FLUX3编辑图像qwen21Moss出图"
+ },
+ "77": {
+  "describe": "Full model professional fine-tuning Lora training",
+  "name": "LoRA Trainer — AI-Toolkit H3",
+  "tags": [
+   "Z-Image",
+   "LORA",
+   "AI-Toolkit",
+   "训练"
+  ],
+  "zh": "Lora训练器Aitoolkit-H3"
+ },
+ "78": {
+  "describe": "TrainingZ-image",
+  "name": "Z-Image LoRA Trainer",
+  "tags": [
+   "Z-Image",
+   "LORA",
+   "AI-Toolkit",
+   "训练"
+  ],
+  "zh": "Z-image-Lora训练丹炉"
+ },
+ "8": {
+  "describe": "Image natural language captioning, efficient and smooth, free to edit, using model: JoyCaption-3\\Qwen3\\Ovis2.5",
+  "name": "AI Training Toolkit — Image Annotation & Captioning",
+  "tags": [],
+  "zh": "炼丹必备辅助工具-图像打标-图像反推"
+ },
+ "80": {
+  "describe": "Better motion migration than Animate",
+  "name": "SteadyDancer — Skeleton Rigging & Better Motion Transfer",
+  "tags": [],
+  "zh": "SteadyDancer-各种骨骼绑定-更好的动作迁移"
+ },
+ "81": {
+  "describe": "Alibaba’s latest open source, ready to use right out of the box",
+  "name": "Ovis-Image-ComfyUI",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "Ovis-Image-ComfyUI"
+ },
+ "82": {
+  "describe": "Text-to-speech, voice design, streaming generation, dialect support",
+  "name": "VoxCPM-2-TTS-WEB-UI",
+  "tags": [
+   "语音",
+   "TTS"
+  ],
+  "zh": "VoxCPM-2-TTS-WEB-UI"
+ },
+ "83": {
+  "describe": "Microsoft speech synthesis supports multiple speakers",
+  "name": "VibeVoice Speech Synthesis — WebUI Build by Ke Ge",
+  "tags": [
+   "语音"
+  ],
+  "zh": "VibeVoice语音合成系统二次webui开发构建by科哥"
+ },
+ "84": {
+  "describe": "Continuously updated version recommended for use with 40 series graphics cards",
+  "name": "FaceFusion 3.5.3 — Offline, All Models, Ready to Use",
+  "tags": [],
+  "zh": "facefusion3.5.3最新版离线全部模型开机即用"
+ },
+ "85": {
+  "describe": "Mistral AI's latest open source, large visual model",
+  "name": "Ministral-3-8B-WEB-UI",
+  "tags": [],
+  "zh": "Ministral-3-8B-WEB-UI"
+ },
+ "86": {
+  "describe": "MSST WebUI — music and background-audio separation in one tool",
+  "name": "MSST WebUI — Music / Background Audio Separation",
+  "tags": [],
+  "zh": "MSST-WebUI音乐音频分离器背景音乐音频分离器n合一"
+ },
+ "87": {
+  "describe": "Meituan Totoro text-to-image, picture editing",
+  "name": "LongCat-Image-Edit-ComfyUI",
+  "tags": [
+   "LongCat",
+   "ComfyUI"
+  ],
+  "zh": "LongCat-Image-Edit-ComfyUI"
+ },
+ "88": {
+  "describe": "Batch generation to generate webUI version",
+  "name": "Heygem Digital Human Video — Batch WebUI by Ke Ge",
+  "tags": [
+   "HeyGem"
+  ],
+  "zh": "Heygem数字人视频生成系统批量版webui版二次开发科哥"
+ },
+ "89": {
+  "describe": "Web/API dual support, Zhipu’s latest open source",
+  "name": "GLM-4.6V-Flash-WEB",
+  "tags": [],
+  "zh": "GLM-4.6V-Flash-WEB"
+ },
+ "9": {
+  "describe": "IndexTTS 2.5 — Bilibili's open-source zero-shot text-to-speech model, with ComfyUI and Gradio WebUI support",
+  "name": "indextts2.5",
+  "tags": [
+   "TTS",
+   "音频"
+  ],
+  "zh": "indextts2.5"
+ },
+ "90": {
+  "describe": "Popular starting number Docker image, complete models",
+  "name": "Film & TV Remix — Single and Multi-Person Workflows",
+  "tags": [
+   "ComfyUI"
+  ],
+  "zh": "影视二创-单人多人工作流"
+ },
+ "91": {
+  "describe": "Speech recognition large model, Zhipu’s latest open source",
+  "name": "GLM-ASR-WEBUI",
+  "tags": [
+   "智源GLM"
+  ],
+  "zh": "GLM-ASR-WEBUI"
+ },
+ "92": {
+  "describe": "Text-to-speech large model, Zhipu’s latest open source",
+  "name": "GLM-TTS-WEBUI",
+  "tags": [
+   "智源GLM"
+  ],
+  "zh": "GLM-TTS-WEBUI"
+ },
+ "93": {
+  "describe": "Smartphone assistant framework, Zhipu’s latest open source",
+  "name": "Open-AutoGLM-API",
+  "tags": [],
+  "zh": "Open-AutoGLM-API"
+ },
+ "94": {
+  "describe": "Large speech recognition model, Alibaba’s latest open source",
+  "name": "Fun-ASR-Nano-2512",
+  "tags": [],
+  "zh": "Fun-ASR-Nano-2512"
+ },
+ "95": {
+  "describe": "Alibaba’s latest open source, text-to-speech large model",
+  "name": "Fun-CosyVoice3-WEBUI",
+  "tags": [],
+  "zh": "Fun-CosyVoice3-WEBUI"
+ },
+ "96": {
+  "describe": "Cosyvoce3 Ali's latest open source voice cloning application Mandarin, Cantonese, English and Japanese dialects are more accurate and emotional. Secondary development and construction By Ke Ge",
+  "name": "CosyVoice 3 — Alibaba Open-Source Voice Cloning (Mandarin, Cantonese, English, Japanese)",
+  "tags": [
+   "音频"
+  ],
+  "zh": "cosyvoce3阿里最新开源声音克隆应用普通话粤语英语日语方言"
+ },
+ "98": {
+  "describe": "Alibaba's latest open source, large model for image editing and layer extraction.",
+  "name": "Qwen-Image-Layered-WEBUI",
+  "tags": [
+   "Qwen"
+  ],
+  "zh": "Qwen-Image-Layered-WEBUI"
+ },
+ "99": {
+  "describe": "Alibaba’s open source image editing model",
+  "name": "Qwen-Image-Layered-comfyUI",
+  "tags": [
+   "Qwen",
+   "ComfyUI"
+  ],
+  "zh": "Qwen-Image-Layered-comfyUI"
+ }
+}

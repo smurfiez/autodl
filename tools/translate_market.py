@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 """Cache English names/descriptions/tags for market.db apps.
 
-    python3 tools/translate_market.py sync                  # translate what is missing or stale
+The curated translations in `tools/translations_en.json` are the primary
+source: they are committed, reviewable, and need no network. `sync` copies
+them into market.db and only calls the provider (Google's free gtx endpoint)
+for apps missing from that file, and only with --online.
+
+    python3 tools/translate_market.py sync                  # import the curated file
+    python3 tools/translate_market.py sync --online         # also translate apps missing from it
     python3 tools/translate_market.py sync --limit 20       # translate only 20 rows, then stop
     python3 tools/translate_market.py sync --refresh        # retranslate everything
     python3 tools/translate_market.py sync --workers 6      # more parallel requests
+    python3 tools/translate_market.py sync --refresh --workers 2 --delay 0.3   # gentle, after a 429
     python3 tools/translate_market.py show 313              # stored English for one app
 
 Rows live in market.db so the web UI never calls a translator per page view.
@@ -33,6 +40,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 DB = Path(os.environ.get("ADL_MARKET_DB") or Path(__file__).resolve().parent.parent / "market.db")
+SEED = Path(__file__).resolve().parent / "translations_en.json"
 LANG = "en"
 ENDPOINT = "https://translate.googleapis.com/translate_a/single"
 USER_AGENT = (
@@ -68,6 +76,7 @@ GLOSSARY = sorted([
     ("千问", "Qwen"), ("镜像", "Docker image"), ("数字人", "digital human"),
     ("开机即用", "ready to use"), ("开机即食", "ready to use"), ("魔改版", "Remixed Edition"),
     ("打标", "annotation"), ("反推", "captioning"), ("短剧", "short drama"),
+    ("屾哥", "Shen Ge"), ("文生", "text-to-video"), ("图生", "image-to-video"),
 ], key=lambda pair: -len(pair[0]))
 
 TAG_GLOSSARY = {
@@ -90,6 +99,23 @@ def connect() -> sqlite3.Connection:
     db.row_factory = sqlite3.Row
     db.executescript(SCHEMA)
     return db
+
+
+def load_seed() -> dict[tuple[int, str], str]:
+    """{(app_id, field): text} from the committed translations file."""
+    if not SEED.exists():
+        return {}
+    raw = json.loads(SEED.read_text())
+    seed = {}
+    for key, entry in raw.items():
+        app_id = int(key)
+        for field in FIELDS:
+            value = entry.get(field)
+            if field == "tags":
+                value = json.dumps(value or [], ensure_ascii=False)
+            if isinstance(value, str) and value.strip():
+                seed[(app_id, field)] = value
+    return seed
 
 
 def digest(text: str) -> str:
@@ -217,12 +243,9 @@ def translate_tags(raw: str | None, translator=None) -> str:
         return "[]"
     source = TAG_SEP.join(tags)
     if is_ascii(source):
-        english = tags
+        return json.dumps(tags, ensure_ascii=False)
     else:
-        try:
-            translated = translate_text(source, translator)
-        except TranslateError:
-            return json.dumps(tags, ensure_ascii=False)
+        translated = translate_text(source, translator)
         english = [part.strip() for part in translated.split("|") if part.strip()]
         if len(english) != len(tags):  # separator lost in translation: keep the originals
             return json.dumps(tags, ensure_ascii=False)
@@ -240,10 +263,11 @@ def translate_field(field: str, source: str, translator=None) -> str:
     return title_case(english) if field == "name" else sentence_case(english)
 
 
-def pending(db: sqlite3.Connection, refresh: bool, limit: int | None) -> tuple[list[tuple[int, str, str]], int]:
+def pending(db: sqlite3.Connection, refresh: bool, limit: int | None,
+            seed: dict[tuple[int, str], str] | None = None) -> tuple[list[tuple[int, str, str]], int]:
     stored = {
-        (row["app_id"], row["field"]): row["source_hash"]
-        for row in db.execute("select app_id, field, source_hash from translations where lang = ?", (LANG,))
+        (row["app_id"], row["field"]): (row["source_hash"], row["text"])
+        for row in db.execute("select app_id, field, source_hash, text from translations where lang = ?", (LANG,))
     }
     tasks, skipped = [], 0
     for app in db.execute("select id, name, describe, tags from applications order by id"):
@@ -251,31 +275,71 @@ def pending(db: sqlite3.Connection, refresh: bool, limit: int | None) -> tuple[l
             source = (app[field] or "").strip()
             if field != "tags" and not source:
                 continue
-            if not refresh and stored.get((app["id"], field)) == digest(source):
-                skipped += 1
-                continue
+            fresh = not refresh and stored.get((app["id"], field), ("", ""))[0] == digest(source)
+            if fresh:
+                curated = (seed or {}).get((app["id"], field))
+                if curated is None or stored[(app["id"], field)][1] == curated:
+                    skipped += 1
+                    continue
             tasks.append((app["id"], field, source))
     return tasks[:limit] if limit else tasks, skipped
 
 
-def sync(limit: int | None = None, refresh: bool = False, workers: int = 4, translator=None) -> int:
+def write_row(db: sqlite3.Connection, app_id: int, field: str, source: str, text: str, stamp: str) -> None:
+    with db:
+        db.execute(
+            "insert into translations (app_id, field, lang, text, source_hash, updated_at) "
+            "values (?, ?, ?, ?, ?, ?) "
+            "on conflict (app_id, field, lang) do update set "
+            "text = excluded.text, source_hash = excluded.source_hash, updated_at = excluded.updated_at",
+            (app_id, field, LANG, text, digest(source), stamp),
+        )
+
+
+def sync(limit: int | None = None, refresh: bool = False, workers: int = 4,
+         translator=None, delay: float = 0.0, online: bool = False) -> int:
     translator = translator or call_provider
     db = connect()
-    tasks, skipped = pending(db, refresh, limit)
+    seed = load_seed()
+    tasks, skipped = pending(db, refresh, limit, seed)
+    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
     if not tasks:
         print(f"translations: up to date, {skipped} row(s) skipped", file=sys.stderr)
         db.close()
         return 0
-    print(f"translate: {len(tasks)} row(s) to do, {skipped} up to date, {workers} worker(s)", file=sys.stderr)
+
+    seeded = [task for task in tasks if (task[0], task[1]) in seed]
+    remaining = [task for task in tasks if (task[0], task[1]) not in seed]
+    for app_id, field, source in seeded:
+        write_row(db, app_id, field, source, seed[(app_id, field)], stamp)
+    if seeded:
+        print(f"import: {len(seeded)} row(s) from {SEED.name}, {skipped} up to date", file=sys.stderr)
+    if remaining and not online:
+        print(
+            f"missing: {len(remaining)} row(s) have no entry in {SEED.name} "
+            f"(apps {sorted({task[0] for task in remaining})[:8]}); "
+            "add them to that file or rerun with --online",
+            file=sys.stderr,
+        )
+    tasks = remaining if online else []
+    if not tasks:
+        counts = {row["field"]: row["n"] for row in db.execute(
+            "select field, count(*) n from translations where lang = ? group by field", (LANG,))}
+        db.close()
+        summary = ", ".join(f"{field} {counts.get(field, 0)}" for field in FIELDS)
+        print(f"translations: {summary}  (this run: {len(seeded)} imported, 0 translated)")
+        return len(seeded)
+    print(f"translate: {len(tasks)} row(s) to do, {workers} worker(s)", file=sys.stderr)
 
     def work(task: tuple[int, str, str]) -> tuple[tuple[int, str, str], str | None, str | None]:
         app_id, field, source = task
         try:
+            if delay:
+                time.sleep(delay)
             return task, translate_field(field, source, translator), None
         except TranslateError as exc:
             return task, None, str(exc)
 
-    stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
     done, failed = 0, 0
     with ThreadPoolExecutor(max_workers=workers) as pool:
         for task, english, error in pool.map(work, tasks):
@@ -285,14 +349,7 @@ def sync(limit: int | None = None, refresh: bool = False, workers: int = 4, tran
                 failed += 1
                 print(f"  fail {app_id}/{field}: {error}", file=sys.stderr)
             else:
-                with db:
-                    db.execute(
-                        "insert into translations (app_id, field, lang, text, source_hash, updated_at) "
-                        "values (?, ?, ?, ?, ?, ?) "
-                        "on conflict (app_id, field, lang) do update set "
-                        "text = excluded.text, source_hash = excluded.source_hash, updated_at = excluded.updated_at",
-                        (app_id, field, LANG, english, digest(source), stamp),
-                    )
+                write_row(db, app_id, field, source, english, stamp)
             if done % 25 == 0 or done == len(tasks):
                 print(f"  {done}/{len(tasks)}  written {done - failed}  failed {failed}", file=sys.stderr)
 
@@ -300,7 +357,7 @@ def sync(limit: int | None = None, refresh: bool = False, workers: int = 4, tran
         "select field, count(*) n from translations where lang = ? group by field", (LANG,))}
     db.close()
     summary = ", ".join(f"{field} {counts.get(field, 0)}" for field in FIELDS)
-    print(f"translations: {summary}  (this run: {done - failed} written, {failed} failed)")
+    print(f"translations: {summary}  (this run: {len(seeded)} imported, {done - failed} translated, {failed} failed)")
     if failed:
         raise SystemExit(f"{failed} row(s) failed — rerun `sync` to retry the rest")
     return done - failed
@@ -335,6 +392,9 @@ def main() -> None:
     sync_parser.add_argument("--limit", type=int, help="stop after N rows (resume later)")
     sync_parser.add_argument("--refresh", action="store_true", help="retranslate even when the hash matches")
     sync_parser.add_argument("--workers", type=int, default=4, help="parallel requests (default 4)")
+    sync_parser.add_argument("--delay", type=float, default=0.0, help="seconds to sleep before each row (default 0)")
+    sync_parser.add_argument("--online", action="store_true",
+                             help="translate apps missing from translations_en.json (network)")
 
     show_parser = sub.add_parser("show", help="stored English for one app")
     show_parser.add_argument("app_id", type=int)
@@ -343,7 +403,7 @@ def main() -> None:
     if args.command == "sync":
         if args.workers < 1:
             raise SystemExit("--workers: must be at least 1")
-        sync(limit=args.limit, refresh=args.refresh, workers=args.workers)
+        sync(limit=args.limit, refresh=args.refresh, workers=args.workers, delay=args.delay, online=args.online)
     else:
         show(args.app_id)
 

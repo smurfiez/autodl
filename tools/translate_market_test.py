@@ -58,6 +58,17 @@ with tempfile.TemporaryDirectory() as tmp:
     assert json.loads(tm.translate_tags("[]", stub)) == []
     assert json.loads(tm.translate_tags("not json", stub)) == []
 
+    # a provider failure must surface, never be cached as the Chinese original
+    def refuse(text: str) -> str:
+        raise tm.TranslateError("HTTP 429")
+
+    try:
+        tm.translate_tags('["音频"]', refuse)
+    except tm.TranslateError:
+        pass
+    else:
+        raise AssertionError("translate_tags must not swallow provider errors")
+
     # mixed name: ascii brand survives, chinese part translated
     mixed = tm.translate_field("name", "LoRANext云端训练器", stub)
     assert mixed.startswith("LoRANext"), mixed
@@ -65,7 +76,7 @@ with tempfile.TemporaryDirectory() as tmp:
     assert "云端" not in mixed, mixed
 
     calls_before = len(CALLS)
-    assert tm.sync(translator=stub) > 0
+    assert tm.sync(translator=stub, online=True) > 0
     db = tm.connect()
     first = db.execute("select count(*) from translations").fetchone()[0]
     assert first == 9, first  # 3 apps x 3 fields
@@ -84,7 +95,7 @@ with tempfile.TemporaryDirectory() as tmp:
     assert tm.sync(translator=stub) == 0
     assert len(CALLS) == calls_before, CALLS[calls_before:]
     # --refresh retranslates, still one row per (app, field, lang)
-    assert tm.sync(refresh=True, translator=stub) == 9
+    assert tm.sync(refresh=True, translator=stub, online=True) == 9
     db = tm.connect()
     assert db.execute("select count(*) from translations").fetchone()[0] == 9
     assert len(CALLS) > calls_before
@@ -95,7 +106,23 @@ with tempfile.TemporaryDirectory() as tmp:
     with db:
         db.execute("update applications set describe = '新的训练器' where id = 2")
     db.close()
-    assert tm.sync(translator=stub) == 1
+    assert tm.sync(translator=stub, online=True) == 1
+
+    # curated seed file: imported without touching the network
+    seed_path = Path(tmp) / "seed.json"
+    seed_path.write_text(json.dumps({"2": {"name": "Word by Word Animation", "describe": "Curated text", "tags": ["Anime"]}}))
+    tm.SEED = seed_path
+    db = tm.connect()
+    with db:
+        db.execute("delete from translations where app_id = 2")
+    db.close()
+    calls_before = len(CALLS)
+    assert tm.sync(translator=stub) == 3, "seed rows must be imported without --online"
+    assert len(CALLS) == calls_before, CALLS[calls_before:]
+    db = tm.connect()
+    assert db.execute("select text from translations where app_id = 2 and field = 'describe'").fetchone()[0] == "Curated text"
+    db.close()
+    tm.SEED = Path(tmp) / "absent.json"
 
     # provider failure is reported, not written as garbage
     def broken(text: str) -> str:
@@ -106,7 +133,7 @@ with tempfile.TemporaryDirectory() as tmp:
         db.execute("update applications set describe = '另一段描述' where id = 2")
     db.close()
     try:
-        tm.sync(translator=broken)
+        tm.sync(translator=broken, online=True)
     except SystemExit as exc:
         assert "failed" in str(exc), exc
     else:
