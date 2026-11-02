@@ -1,6 +1,9 @@
 # live instance state, rewritten by tools/servers.py
 servers.json
 
+# marketplace image index, rebuilt by tools/market.py
+market.db
+
 # local agent session state
 .opencode/
 

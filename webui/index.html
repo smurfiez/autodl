@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>AutoDL deploy console</title>
+<style>
+  :root {
+    --bg: #0b0e12;
+    --panel: #12171e;
+    --panel-2: #161d26;
+    --line: #232c38;
+    --text: #e6edf3;
+    --muted: #8b98a8;
+    --accent: #3fd07a;
+    --warn: #e3b341;
+    --bad: #f0616d;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 18px 24px; border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; background: rgba(11,14,18,.88); backdrop-filter: blur(8px); z-index: 5;
+  }
+  h1 { font-size: 15px; margin: 0; font-weight: 600; letter-spacing: .01em; }
+  h1 span { color: var(--muted); font-weight: 400; }
+  .spacer { flex: 1; }
+  .meta { color: var(--muted); font: 12px var(--mono); }
+  main { padding: 24px; max-width: 1240px; margin: 0 auto; display: grid; gap: 20px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .card > h2 {
+    margin: 0; padding: 12px 16px; font-size: 12px; font-weight: 600;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px;
+  }
+  .card-body { padding: 16px; }
+  .banner {
+    display: none; padding: 10px 14px; border-radius: 10px; font-size: 13px;
+    background: rgba(240,97,109,.1); border: 1px solid rgba(240,97,109,.35); color: #ffc7cb;
+  }
+  .banner.show { display: block; }
+  .banner code { font-family: var(--mono); }
+  form { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 14px; }
+  label { display: grid; gap: 6px; font-size: 12px; color: var(--muted); }
+  input, select, button { font: inherit; color: var(--text); }
+  input, select {
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 8px 10px; width: 100%;
+  }
+  input:focus, select:focus { outline: none; border-color: #6b9de0; }
+  input.mono { font-family: var(--mono); font-size: 12px; }
+  button {
+    background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 7px 13px; cursor: pointer; transition: border-color .12s, background .12s;
+  }
+  button:hover:not(:disabled) { border-color: #3c4b5e; background: #1b2431; }
+  button:disabled { opacity: .35; cursor: not-allowed; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #05230f; font-weight: 600; }
+  button.primary:hover:not(:disabled) { background: #4fe08a; border-color: #4fe08a; }
+  button.danger { color: #ffb5bb; border-color: rgba(240,97,109,.45); }
+  button.danger:hover:not(:disabled) { background: rgba(240,97,109,.12); }
+  button.ghost { background: transparent; }
+  .row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .checks { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; padding: 8px 0; }
+  .checks label { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--text); }
+  .checks input { width: auto; margin: 0; }
+  .actions { display: flex; align-items: end; gap: 10px; grid-column: 1 / -1; }
+  .status-line { font: 12px var(--mono); color: var(--muted); }
+  details { grid-column: 1 / -1; border-top: 1px dashed var(--line); padding-top: 10px; }
+  summary { cursor: pointer; color: var(--muted); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+  .img-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 14px; margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  th { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr:hover { background: rgba(255,255,255,.02); }
+  .mono { font-family: var(--mono); font-size: 12px; }
+  .muted { color: var(--muted); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 2px 9px; border-radius: 99px;
+    font-size: 11px; font-family: var(--mono); border: 1px solid var(--line); background: var(--panel-2);
+    white-space: nowrap;
+  }
+  .pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+  .pill.running { color: #9ef0bb; border-color: rgba(63,208,122,.4); }
+  .pill.running::before { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  .pill.pending { color: #f0d9a0; border-color: rgba(227,179,65,.35); }
+  .pill.pending::before { background: var(--warn); }
+  .pill.bad { color: #ffb5bb; border-color: rgba(240,97,109,.4); }
+  .pill.bad::before { background: var(--bad); }
+  .links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .links a { color: #8ec7ff; text-decoration: none; font-size: 12px; }
+  .links a:hover { text-decoration: underline; }
+  .empty { padding: 28px 16px; text-align: center; color: var(--muted); }
+  .jobs { display: grid; gap: 8px; }
+  .job { display: flex; gap: 10px; align-items: baseline; font: 12px var(--mono); color: var(--muted); }
+  .job b { color: var(--text); font-weight: 600; }
+  .toast {
+    position: fixed; right: 20px; bottom: 20px; max-width: 420px; display: grid; gap: 8px; z-index: 20;
+  }
+  .toast div {
+    background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 10px 12px; font-size: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.45);
+  }
+  .toast div.err { border-left-color: var(--bad); }
+  .health-grid {
+    padding: 12px; display: grid; gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  .hcard {
+    background: var(--panel-2); border: 1px solid var(--line); border-left: 3px solid #39424f;
+    border-radius: 10px; padding: 10px 12px; display: grid; gap: 6px; min-width: 0;
+  }
+  .hcard.ok { border-left-color: var(--accent); }
+  .hcard.warn { border-left-color: var(--warn); }
+  .hcard.down { border-left-color: var(--bad); }
+  .htop { display: flex; align-items: center; gap: 7px; min-width: 0; }
+  .hname { font-weight: 650; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hhost { font: 11px var(--mono); color: var(--muted); white-space: nowrap; }
+  .hpill {
+    margin-left: auto; font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+    padding: 2px 8px; border-radius: 999px; background: #1e2530; color: var(--muted); white-space: nowrap;
+  }
+  .hpill.busy { background: rgba(63,208,122,.14); color: #9ef0bb; }
+  .hpill.down { background: rgba(240,97,109,.18); color: #ffb5bb; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 10px; }
+  .stat { min-width: 0; }
+  .stat .k { color: var(--muted); font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stat .v { font: 600 13px var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .meter { height: 3px; background: #1e242e; border-radius: 2px; margin-top: 3px; overflow: hidden; }
+  .meter i { display: block; height: 100%; background: #4f9cf0; }
+  .meter i.hot { background: var(--warn); }
+  .hfoot { margin-top: auto; font: 11.5px var(--mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hproblem { font-size: 12px; color: var(--warn); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hcard.down .hproblem { color: var(--bad); }
+  @media (max-width: 760px) {
+    main { padding: 16px; }
+    .scroll { overflow-x: auto; }
+    table { min-width: 0; }
+    th:nth-child(3), td:nth-child(3),
+    th:nth-child(4), td:nth-child(4),
+    th:nth-child(5), td:nth-child(5) { display: none; }
+    .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat .v { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>AutoDL deploy console <span>/ pro pay-as-you-go</span></h1>
+  <div class="spacer"></div>
+  <label class="meta" style="display:flex;align-items:center;gap:6px;cursor:pointer">
+    <input type="checkbox" id="auto" checked style="width:auto"> auto-refresh
+  </label>
+  <div class="meta" id="updated">never updated</div>
+</header>
+
+<main>
+  <div class="banner" id="banner" role="alert"></div>
+
+  <section class="card">
+    <h2>Deploy instance</h2>
+    <div class="card-body">
+      <form id="deploy">
+        <label>GPU slot <select id="gpu"></select></label>
+        <label>Data centers <span class="checks" id="dc"></span></label>
+        <label>Name <input id="name" placeholder="optional" autocomplete="off"></label>
+        <label>Extra system disk (GB) <input id="disk" type="number" min="0" max="500" value="0"></label>
+        <div class="checks" style="padding:8px 0">
+          <label><input type="checkbox" id="waitStock" checked> Queue until a slot frees</label>
+        </div>
+
+        <details>
+          <summary>Image / application</summary>
+          <div id="image" class="img-grid">
+            <label>Application UUID <input id="appUuid" class="mono" value="app-image-8a23e8ee9e"></label>
+            <label>Image id <input id="imageId" class="mono" type="number" value="313"></label>
+            <label>Image name <input id="imageName" value="MURAD-ComfyUI"></label>
+            <label>Version <input id="version" class="mono" value="2.0"></label>
+            <label>Version id <input id="versionId" class="mono" type="number" value="962"></label>
+          </div>
+        </details>
+
+        <div class="actions">
+          <button class="primary" id="deployBtn" type="submit">Deploy</button>
+          <button class="ghost" id="refreshGpu" type="button">Refresh inventory</button>
+          <div class="status-line" id="deployStatus"></div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Health <span class="mono" id="healthSummary"></span></h2>
+    <div class="health-grid" id="health"><div class="empty">waiting for stats…</div></div>
+  </section>
+
+  <section class="card">
+    <h2>Instances <span class="mono" id="count"></span></h2>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Instance</th><th>Status</th><th>GPU</th><th>Region</th>
+            <th>Price</th><th>Endpoints</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rows"><tr><td colspan="7" class="empty">loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="card-body jobs" id="jobs"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const state = { instances: [], jobs: [], pending: new Set(), config: null, health: null, pollTimer: null };
+const STEPS = new Set(["creating", "created", "sys_volume_creating", "starting"]);
+const BAD = new Set(["create_failed", "pull_image_failed", "shutdown_by_starting_error"]);
+
+function toast(message, isError) {
+  const node = document.createElement("div");
+  if (isError) node.className = "err";
+  node.textContent = message;
+  $("toast").append(node);
+  setTimeout(() => node.remove(), isError ? 9000 : 4500);
+}
+
+async function api(path, options) {
+  const response = await fetch(path, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+  let body = null;
+  try { body = await response.json(); } catch { /* empty body */ }
+  if (!response.ok) {
+    const detail = body && body.detail;
+    throw new Error(typeof detail === "string" ? detail : detail ? JSON.stringify(detail) : `HTTP ${response.status}`);
+  }
+  return body;
+}
+
+function statusClass(status) {
+  if (status === "running") return "pill running";
+  if (BAD.has(status)) return "pill bad";
+  if (status === "shutdown") return "pill";
+  return "pill pending";
+}
+
+function el(tag, props, children) {
+  const node = document.createElement(tag);
+  Object.assign(node, props || {});
+  for (const child of children || []) node.append(child);
+  return node;
+}
+
+function renderInstances() {
+  const rows = $("rows");
+  rows.textContent = "";
+  $("count").textContent = state.instances.length ? `${state.instances.length}` : "";
+  if (!state.instances.length) {
+    rows.append(el("tr", {}, [el("td", { colSpan: 7, className: "empty" }, ["no instances"])]));
+    return;
+  }
+  for (const item of state.instances) {
+    const job = state.jobs.find((entry) => entry.uuid === item.uuid);
+    const busy = job && ["queued", "powering_off", "releasing"].includes(job.state);
+
+    const identity = el("td", {}, [
+      el("div", { className: "mono" }, [item.uuid]),
+      (item.name || item.app || item.version) ? el("div", { className: "muted", style: "font-size:12px" }, [
+        [item.name, item.app && `${item.app} ${item.version}`].filter(Boolean).join(" · "),
+      ]) : null,
+    ]);
+
+    const status = el("td", {}, [
+      el("span", { className: statusClass(item.status), textContent: item.status || "?" }),
+      item.sub_status ? el("div", { className: "muted mono", style: "margin-top:4px" }, [item.sub_status]) : null,
+      job ? el("div", { className: "muted mono", style: "margin-top:4px" }, [`${job.state}: ${job.message}`]) : null,
+    ].filter(Boolean));
+
+    const links = el("td", {}, [
+      el("div", { className: "links" }, [
+        item.comfy ? el("a", { href: item.comfy, target: "_blank", rel: "noreferrer", textContent: "comfy" }) : null,
+        item.panel ? el("a", { href: item.panel, target: "_blank", rel: "noreferrer", textContent: "panel" }) : null,
+        item.jupyter ? el("a", { href: item.jupyter, target: "_blank", rel: "noreferrer", textContent: "jupyter" }) : null,
+        item.ssh ? el("a", { href: "#", textContent: "copy ssh", onclick: (event) => {
+          event.preventDefault();
+          navigator.clipboard.writeText(item.ssh).then(() => toast(`copied ${item.ssh}`), () => toast(item.ssh));
+        } }) : null,
+      ].filter(Boolean)),
+    ]);
+
+    const actions = el("td", {}, [
+      el("div", { className: "row-actions" }, [
+        el("button", {
+          textContent: "Power on",
+          disabled: busy || !["shutdown"].includes(item.status),
+          onclick: () => power(item, "power_on"),
+        }),
+        el("button", {
+          textContent: "Power off",
+          disabled: busy || ["shutdown", "released"].includes(item.status),
+          onclick: () => power(item, "power_off"),
+        }),
+        el("button", {
+          className: "danger",
+          textContent: busy ? job.state : "Release",
+          disabled: busy,
+          onclick: () => release(item),
+        }),
+      ]),
+    ]);
+
+    rows.append(el("tr", {}, [
+      identity,
+      status,
+      el("td", { className: "mono" }, [item.gpu || "—"]),
+      el("td", { className: "muted" }, [item.region || "—"]),
+      el("td", { className: "mono" }, [item.price_per_hour ? `¥${item.price_per_hour.toFixed(2)}/h` : "—"]),
+      links,
+      actions,
+    ]));
+  }
+}
+
+function renderJobs() {
+  const box = $("jobs");
+  box.textContent = "";
+  const active = state.jobs.filter((job) => !["released", "cancelled"].includes(job.state));
+  if (!active.length) return;
+  box.append(el("div", { className: "muted", style: "font-size:11px;text-transform:uppercase;letter-spacing:.07em" }, ["jobs"]));
+  for (const job of active) {
+    const cancellable = job.kind === "deploy" && ["queued", "waiting", "retrying"].includes(job.state);
+    box.append(el("div", { className: "job" }, [
+      el("b", { textContent: `${job.kind} ${job.uuid || job.id}` }),
+      el("span", { textContent: `${job.state} — ${job.message}` }),
+      el("span", { className: "muted", textContent: job.updated_at.slice(11, 19) }),
+      cancellable ? el("button", { className: "ghost", textContent: "Cancel", onclick: () => cancelJob(job.id) }) : null,
+    ].filter(Boolean)));
+  }
+}
+
+async function cancelJob(id) {
+  try {
+    await api(`/api/jobs/${encodeURIComponent(id)}`, { method: "DELETE" });
+    toast(`cancelled ${id}`);
+    refresh();
+  } catch (error) {
+    toast(`cancel failed: ${error.message}`, true);
+  }
+}
+
+// --- health cards (ported from the DO gpu-panel) ------------------------------------------------------
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (ch) => (
+  { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+const gib = (bytes) => (Number(bytes) / 1024 ** 3).toFixed(1);
+const fixed = (value, digits = 0) => (typeof value === "number" && isFinite(value) ? value.toFixed(digits) : "—");
+const ratio = (part, whole) => (whole ? part / whole : 0);
+const meter = (fraction, hot) =>
+  `<div class="meter"><i class="${hot ? "hot" : ""}" style="width:${Math.max(0, Math.min(1, fraction || 0)) * 100}%"></i></div>`;
+const tile = (key, value, fraction, hot) =>
+  `<div class="stat"><div class="k">${esc(key)}</div><div class="v">${esc(value)}</div>${fraction === undefined ? "" : meter(fraction, hot)}</div>`;
+const clock = (seconds) => {
+  const total = Math.max(0, Math.round(seconds || 0));
+  return `${String(Math.floor(total / 60)).padStart(2, "0")}:${String(total % 60).padStart(2, "0")}`;
+};
+const humanDuration = (seconds) => {
+  const total = Math.max(0, Math.round(seconds || 0));
+  if (total >= 86_400) return `${Math.floor(total / 86_400)}d ${Math.floor(total % 86_400 / 3600)}h`;
+  if (total >= 3600) return `${Math.floor(total / 3600)}h ${Math.floor(total % 3600 / 60)}m`;
+  return `${Math.floor(total / 60)}m`;
+};
+
+function healthCard(box) {
+  const host = box.host || {};
+  const gpu = (host.gpus || [])[0] || {};
+  const comfy = box.comfy_state || {};
+  const level = box.level || "unknown";
+  const busy = (comfy.running || 0) > 0;
+  const pill = level === "down"
+    ? '<span class="hpill down">DOWN</span>'
+    : busy ? '<span class="hpill busy">PROCESSING</span>' : '<span class="hpill">IDLE</span>';
+
+  const hasHost = Boolean(host.gpus && host.gpus.length);
+  const gpuRow = !hasHost ? "" : [
+    tile("GPU", `${fixed(gpu.util)}%`, (gpu.util || 0) / 100),
+    tile("VRAM", `${fixed((gpu.mem_used || 0) / 1024, 1)}/${fixed((gpu.mem_total || 0) / 1024, 1)}G`,
+      ratio(gpu.mem_used || 0, gpu.mem_total || 1), ratio(gpu.mem_used || 0, gpu.mem_total || 1) > 0.95),
+    tile("Temp", `${fixed(gpu.temp)}°C`, (gpu.temp || 0) / 100, (gpu.temp || 0) >= 85),
+    tile("Power", `${fixed(gpu.power)} W`, (gpu.power || 0) / (gpu.power_limit || 700)),
+  ].join("");
+
+  const hostRow = !hasHost ? "" : [
+    host.mem ? tile("RAM", `${gib(host.mem.used)}/${gib(host.mem.total)}G`,
+      ratio(host.mem.used, host.mem.total), ratio(host.mem.used, host.mem.total) > 0.9) : "",
+    ...Object.entries(host.disks || {}).slice(0, 2).map(([path, disk]) => tile(
+      path === "/" ? "Disk root" : `${path.split("/").pop()} free`,
+      `${gib(disk.total - disk.used)}G`, ratio(disk.used, disk.total), ratio(disk.used, disk.total) > 0.9)),
+    (host.load && host.cpus) ? tile("Load", `${fixed(host.load[0], 1)}/${host.cpus}`,
+      ratio(host.load[0], host.cpus)) : "",
+  ].filter(Boolean).slice(0, 4).join("");
+
+  // no SSH yet: ComfyUI's own /system_stats still gives VRAM and RAM
+  const fallbackRow = (!hasHost && comfy.vram_total) ? [
+    tile("VRAM", `${gib(comfy.vram_total - comfy.vram_free)}/${gib(comfy.vram_total)}G`,
+      ratio(comfy.vram_total - comfy.vram_free, comfy.vram_total)),
+    comfy.ram_total ? tile("RAM", `${gib(comfy.ram_total - comfy.ram_free)}/${gib(comfy.ram_total)}G`,
+      ratio(comfy.ram_total - comfy.ram_free, comfy.ram_total)) : "",
+    tile("Queue", `${comfy.pending || 0}`),
+  ].filter(Boolean).join("") : "";
+
+  const activity = level === "down"
+    ? `<div class="hproblem">${esc(box.host_error || "host unreachable")}</div>`
+    : busy
+      ? `<div class="hfoot" style="color:var(--text)">running <b data-since="${esc(comfy.started_at || "")}">${esc(clock(comfy.started_at ? box.now / 1000 - (comfy.started_at > 1e12 ? comfy.started_at / 1000 : comfy.started_at) : 0))}</b> · ${comfy.pending || 0} queued</div>`
+      : `<div class="hfoot">queue empty${comfy.version ? ` · ComfyUI ${esc(comfy.version)}` : ""}</div>`;
+
+  const foot = [
+    comfy.version ? `v${comfy.version}` : "",
+    host.uptime_s ? `up ${esc(humanDuration(host.uptime_s))}` : "",
+    box.host_age_s !== null && box.host_age_s !== undefined ? `stats ${fixed(box.host_age_s)}s old` : "no ssh stats",
+  ].filter(Boolean).join(" · ");
+
+  const problems = box.problems && box.problems.length && level !== "down"
+    ? `<div class="hproblem">⚠ ${esc(box.problems.join(" · "))}</div>` : "";
+
+  return `<div class="hcard ${level}">
+    <div class="htop"><span class="hname">${esc(box.name === box.uuid ? box.uuid.slice(4) : box.name)}</span>${box.name === box.uuid ? "" : `<span class="hhost">${esc(box.uuid.slice(4))}</span>`}${pill}</div>
+    ${activity}
+    ${gpuRow ? `<div class="grid4">${gpuRow}</div>` : ""}
+    ${hostRow ? `<div class="grid4">${hostRow}</div>` : ""}
+    ${fallbackRow ? `<div class="grid4">${fallbackRow}</div>` : ""}
+    ${problems}
+    <div class="hfoot">${esc(foot)}</div>
+  </div>`;
+}
+
+function renderHealth(data) {
+  state.health = data;
+  const boxes = data.boxes || [];
+  const healthy = boxes.filter((box) => box.level === "ok").length;
+  const busy = boxes.filter((box) => (box.comfy_state?.running || 0) > 0).length;
+  $("healthSummary").textContent = boxes.length ? `${healthy}/${boxes.length} healthy · ${busy} processing` : "";
+  $("health").innerHTML = boxes.length
+    ? boxes.map((box) => healthCard({ ...box, now: data.now })).join("")
+    : '<div class="empty">no running instances</div>';
+}
+
+async function loadHealth() {
+  try {
+    renderHealth(await api("/api/health"));
+  } catch (error) {
+    $("health").innerHTML = `<div class="empty">${esc(error.message)}</div>`;
+  }
+}
+
+function tickHealth() {
+  const nowSeconds = Date.now() / 1000;
+  for (const node of document.querySelectorAll("[data-since]")) {
+    let since = Number(node.dataset.since);
+    if (!isFinite(since) || since <= 0) continue;
+    if (since > 1e12) since /= 1000;
+    node.textContent = clock(nowSeconds - since);
+  }
+}
+
+async function refresh() {
+  try {
+    const data = await api("/api/instances");
+    state.instances = data.instances;
+    state.jobs = data.jobs;
+    for (const uuid of [...state.pending]) {
+      const found = state.instances.find((item) => item.uuid === uuid);
+      if (found && (found.status === "running" || BAD.has(found.status))) {
+        state.pending.delete(uuid);
+        if (found.status === "running") toast(`${uuid} is running`);
+        if (found.comfy) window.open(found.comfy, "_blank", "noreferrer");
+      }
+    }
+    renderInstances();
+    renderJobs();
+    $("banner").classList.remove("show");
+    const now = new Date();
+    $("updated").textContent = `updated ${now.toTimeString().slice(0, 8)}`;
+    if (state.pending.size && !state.fastPoll) {
+      state.fastPoll = true;
+      setTimeout(() => { state.fastPoll = false; refresh(); }, 3000);
+    }
+  } catch (error) {
+    console.error("refresh failed", error);
+    showBanner(error.message);
+  }
+}
+
+function showBanner(message) {
+  const banner = $("banner");
+  banner.textContent = message;
+  banner.classList.add("show");
+}
+
+function selectedDataCenters() {
+  return [...document.querySelectorAll("#dc input:checked")].map((input) => input.value);
+}
+
+async function loadGpus() {
+  const dcs = selectedDataCenters();
+  const select = $("gpu");
+  const query = (dcs.length ? dcs : ["westDC3"]).map((dc) => `dc=${encodeURIComponent(dc)}`).join("&");
+  try {
+    const data = await api(`/api/gpus?${query}`);
+    const previous = select.value;
+    select.textContent = "";
+    for (const gpu of data.gpus) {
+      const option = document.createElement("option");
+      option.value = gpu.name;
+      const price = gpu.list_price ? ` ¥${gpu.list_price.toFixed(2)}/h` : "";
+      const perDc = Object.entries(gpu.idle_by_dc || {})
+        .map(([dc, count]) => `${dc.replace(/DC.*/, "")} ${count}`).join(" · ");
+      option.textContent = `${gpu.name}${gpu.card ? ` (${gpu.card})` : ""}${price} — ` +
+        (gpu.available ? `${gpu.idle} idle` : "no stock, queue it") +
+        (Object.keys(gpu.idle_by_dc || {}).length > 1 && perDc ? ` (${perDc})` : "");
+      select.append(option);
+    }
+    const first = data.gpus.find((gpu) => gpu.name === previous)
+      || data.gpus.find((gpu) => gpu.available)
+      || data.gpus[0];
+    if (first) select.value = first.name;
+    if (!first) toast(`no idle GPU in ${dcs.join(" / ") || "westDC3"} right now`, true);
+  } catch (error) {
+    select.textContent = "";
+    select.append(el("option", { value: "", textContent: "inventory unavailable" }));
+    toast(`inventory: ${error.message}`, true);
+  }
+}
+
+async function deploy(event) {
+  event.preventDefault();
+  const button = $("deployBtn");
+  const body = {
+    gpu: $("gpu").value,
+    data_centers: selectedDataCenters(),
+    name: $("name").value.trim(),
+    disk_extra_gb: Number($("disk").value || 0),
+    app_uuid: $("appUuid").value.trim(),
+    image_id: Number($("imageId").value),
+    image_name: $("imageName").value.trim(),
+    version: $("version").value.trim(),
+    version_id: Number($("versionId").value),
+    wait: $("waitStock").checked,
+  };
+  if (!body.gpu) { toast("pick a GPU slot", true); return; }
+  if (!body.data_centers.length) { toast("check at least one data center", true); return; }
+  if (!body.app_uuid || !body.image_name) { toast("application fields are incomplete", true); return; }
+  button.disabled = true;
+  $("deployStatus").textContent = "submitting…";
+  try {
+    const result = await api("/api/instances", { method: "POST", body: JSON.stringify(body) });
+    $("name").value = "";
+    if (result.queued) {
+      $("deployStatus").textContent = `${result.job_id} waiting for stock`;
+      toast(`no stock now — ${result.job_id} will create as soon as a slot frees`);
+    } else {
+      state.pending.add(result.uuid);
+      $("deployStatus").textContent = `${result.uuid} creating in ${result.data_center} (spec ${result.spec_id})`;
+      toast(`${result.uuid} queued, polling until running`);
+    }
+    refresh();
+    loadGpus();
+  } catch (error) {
+    $("deployStatus").textContent = "";
+    toast(`create failed: ${error.message}`, true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function power(item, action) {
+  try {
+    await api(`/api/instances/${encodeURIComponent(item.uuid)}/${encodeURIComponent(action)}`, { method: "POST" });
+    toast(`${action.replace("_", " ")} sent to ${item.uuid}`);
+    refresh();
+  } catch (error) {
+    toast(`${action} failed: ${error.message}`, true);
+  }
+}
+
+async function release(item) {
+  const frozen = item.status === "shutdown" ? "" : "\n\nThe box will be powered off first (billing runs until release).";
+  if (!confirm(`Release ${item.uuid}?\nThis deletes the system disk and cannot be undone.${frozen}`)) return;
+  try {
+    await api(`/api/instances/${encodeURIComponent(item.uuid)}/release`, { method: "POST", body: JSON.stringify({ confirm: true }) });
+    toast(`release started for ${item.uuid}`);
+    refresh();
+  } catch (error) {
+    toast(`release failed: ${error.message}`, true);
+  }
+}
+
+async function boot() {
+  try {
+    state.config = await api("/api/config");
+  } catch (error) {
+    showBanner(error.message);
+    return;
+  }
+  if (!state.config.has_token) {
+    showBanner(`No API token. Write the developer token to ~/.config/adl/token or start the server with ADL_TOKEN.`);
+  }
+  const dcBox = $("dc");
+  for (const name of state.config.data_centers) {
+    dcBox.append(el("label", {}, [
+      el("input", { type: "checkbox", value: name, checked: true, onchange: loadGpus }),
+      document.createTextNode(name),
+    ]));
+  }
+  $("deploy").onsubmit = deploy;
+  $("refreshGpu").onclick = loadGpus;
+  $("auto").onchange = (event) => {
+    clearInterval(state.pollTimer);
+    state.pollTimer = event.target.checked ? setInterval(refresh, 5000) : null;
+  };
+  await Promise.all([loadGpus(), refresh(), loadHealth()]);
+  state.pollTimer = setInterval(refresh, 5000);
+  setInterval(loadHealth, 5000);
+  setInterval(tickHealth, 1000);
+  setInterval(() => { if (document.getElementById("auto").checked) loadGpus(); }, 60000);
+}
+
+boot();
+</script>
+</body>
+</html>
